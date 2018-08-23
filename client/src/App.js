@@ -17,7 +17,8 @@ class App extends Component {
       nowPlaying: { name: "Not Checked", albumArt: "" },
       userId: "",
       playlistId: "",
-      songs: []
+      songs: [],
+      uris: []
     };
 
     // this.createPlaylist = this.createPlaylist.bind(this);
@@ -30,19 +31,32 @@ class App extends Component {
         this.setState({
           userId: response.id
         });
-        console.log(this.state.userId);
+        // console.log(this.state.userId);
       })
       .catch(error => {
         console.log(error);
       });
 
     axios
-      .get("http://localhost:8888/billboard100")
+      .get("/billboard100")
       .then(response => {
-        console.log(response);
+        // console.log(response.data);
         this.setState({
           songs: response.data
         });
+        const tracks = this.state.songs;
+        for (const track of tracks) {
+          spotifyApi
+            .searchTracks(`${track.title}`, { limit: 1 })
+            .then(response => {
+              this.setState({
+                uris: this.state.uris.concat([response.tracks.items[0].uri])
+              });
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
       })
       .catch(error => {
         console.log(error);
@@ -80,11 +94,11 @@ class App extends Component {
         });
         console.log(`Current playlist ID: ${this.state.playlistId}`);
         spotifyApi
-          .addTracksToPlaylist(this.state.userId, this.state.playlistId, [
-            "spotify:track:2G7V7zsVDxg1yRsu7Ew9RJ",
-            "spotify:track:6FRLCMO5TUHTexlWo8ym1W",
-            "spotify:track:0vA82YPx1q4JRWFISf1vIZ"
-          ])
+          .addTracksToPlaylist(
+            this.state.userId,
+            this.state.playlistId,
+            this.state.uris
+          )
           .then(response => {
             console.log(`Added tracks!`);
             console.log(response);
@@ -136,7 +150,9 @@ class App extends Component {
 
         <ul>
           {this.state.songs.map(item => (
-            <li key={item.title}>{item.artist} - {item.title}</li>
+            <li key={item.title}>
+              {item.artist} - {item.title}
+            </li>
           ))}
         </ul>
       </div>
