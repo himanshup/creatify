@@ -15,36 +15,18 @@ class App extends Component {
     this.state = {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
-      userId: "",
-      playlistId: "",
-      songs: [],
+      billboardPlaylistUrl: "",
       uris: []
     };
-
-    // this.createPlaylist = this.createPlaylist.bind(this);
   }
 
   componentDidMount() {
-    spotifyApi
-      .getMe()
-      .then(response => {
-        this.setState({
-          userId: response.id
-        });
-        // console.log(this.state.userId);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
     axios
       .get("/billboard100")
       .then(response => {
-        // console.log(response.data);
-        this.setState({
-          songs: response.data
-        });
-        const tracks = this.state.songs;
+        return response.data;
+      })
+      .then(tracks => {
         for (const track of tracks) {
           spotifyApi
             .searchTracks(`${track.title}`, { limit: 1 })
@@ -52,11 +34,9 @@ class App extends Component {
               this.setState({
                 uris: this.state.uris.concat([response.tracks.items[0].uri])
               });
-            })
-            .catch(error => {
-              console.log(error);
             });
         }
+        console.log("Added tracks to the uris state");
       })
       .catch(error => {
         console.log(error);
@@ -81,35 +61,43 @@ class App extends Component {
 
   createPlaylist = () => {
     spotifyApi
-      .createPlaylist(this.state.userId, {
-        name: "Billboard 100",
-        description: "This was created using the api",
-        public: true
-      })
+      .getMe()
       .then(response => {
-        console.log("Created Playlist!");
-        console.log(response);
-        this.setState({
-          playlistId: response.id
+        return response.id;
+      })
+      .then(userId => {
+        return spotifyApi.createPlaylist(userId, {
+          name: "Billboard 100",
+          public: true
         });
-        console.log(`Current playlist ID: ${this.state.playlistId}`);
-        spotifyApi
-          .addTracksToPlaylist(
-            this.state.userId,
-            this.state.playlistId,
-            this.state.uris
-          )
-          .then(response => {
-            console.log(`Added tracks!`);
-            console.log(response);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+      })
+      .then(playlist => {
+        console.log("Created playlist");
+        console.log(playlist);
+        this.setState({
+          billboardPlaylistUrl: playlist.external_urls.spotify
+        });
+        return spotifyApi.addTracksToPlaylist(
+          playlist.owner.id,
+          playlist.id,
+          this.state.uris
+        );
+      })
+      .then(finalPlaylist => {
+        console.log("Added tracks to your playlist");
+        console.log(finalPlaylist);
       })
       .catch(error => {
         console.log(error);
       });
+  };
+
+  createSavedTracksPlaylist = () => {};
+
+  getRefreshToken = () => {
+    const params = this.getHashParams();
+    const refreshRoken = params.refresh_token;
+    spotifyApi.setAccessToken(refreshRoken);
   };
 
   getHashParams = () => {
@@ -147,14 +135,13 @@ class App extends Component {
             </button>
           </div>
         )}
-
-        <ul>
+        {/* <ul>
           {this.state.songs.map(item => (
             <li key={item.title}>
               {item.artist} - {item.title}
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     );
   }
