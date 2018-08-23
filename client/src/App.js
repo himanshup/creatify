@@ -14,14 +14,23 @@ class App extends Component {
     }
     this.state = {
       loggedIn: token ? true : false,
+      userId: "",
       nowPlaying: { name: "Not Checked", albumArt: "" },
-      billboardPlaylistUrl: "",
-      tracks: [],
+      billboardPlaylistId: "",
+      billboardPlaylistImg: "",
+      billboardPlaylistCreated: false,
+      billboardPlaylist: {},
       uris: []
     };
   }
 
   componentDidMount() {
+    spotifyApi.getMe().then(response => {
+      this.setState({
+        userId: response.id
+      });
+    });
+
     axios
       .all([axios.get("/billboard1"), axios.get("/billboard100")])
       .then(
@@ -61,21 +70,14 @@ class App extends Component {
 
   createPlaylist = () => {
     spotifyApi
-      .getMe()
-      .then(response => {
-        return response.id;
-      })
-      .then(userId => {
-        return spotifyApi.createPlaylist(userId, {
-          name: "Billboard 100",
-          public: true
-        });
+      .createPlaylist(this.state.userId, {
+        name: "Billboard 100",
+        public: true
       })
       .then(playlist => {
         console.log("Created playlist");
-        console.log(playlist);
         this.setState({
-          billboardPlaylistUrl: playlist.external_urls.spotify
+          billboardPlaylistId: playlist.id
         });
         return spotifyApi.addTracksToPlaylist(
           playlist.owner.id,
@@ -86,6 +88,17 @@ class App extends Component {
       .then(finalPlaylist => {
         console.log("Added tracks to your playlist");
         console.log(finalPlaylist);
+        return spotifyApi.getPlaylist(
+          this.state.userId,
+          this.state.billboardPlaylistId
+        );
+      })
+      .then(response => {
+        console.log("Here is your final playlist:");
+        this.setState({
+          billboardPlaylistCreated: true,
+          billboardPlaylist: response
+        });
       })
       .catch(error => {
         console.log(error);
@@ -94,11 +107,7 @@ class App extends Component {
 
   createSavedTracksPlaylist = () => {};
 
-  getRefreshToken = () => {
-    const params = this.getHashParams();
-    const refreshRoken = params.refresh_token;
-    spotifyApi.setAccessToken(refreshRoken);
-  };
+  getRefreshToken = () => {};
 
   getHashParams = () => {
     var hashParams = {};
@@ -133,6 +142,18 @@ class App extends Component {
             <button onClick={() => this.createPlaylist()}>
               Create Playlist
             </button>
+          </div>
+        )}
+        {this.state.billboardPlaylistCreated && (
+          <div>
+            <img src={this.state.billboardPlaylist.images[1].url} alt="" />
+            <div>
+              View your playlist{" "}
+              <a href={this.state.billboardPlaylist.external_urls.spotify}>
+                {" "}
+                here{" "}
+              </a>
+            </div>
           </div>
         )}
         {/* <ul>
