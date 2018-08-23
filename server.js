@@ -157,6 +157,20 @@ app.get("/refresh_token", function(req, res) {
   });
 });
 
+app.get("/billboard1", function(req, res) {
+  var stream = x(
+    "https://www.billboard.com/charts/hot-100",
+    ".chart-number-one__details",
+    [
+      {
+        title: ".chart-number-one__title",
+        artist: ".chart-number-one__artist a"
+      }
+    ]
+  ).stream();
+  stream.pipe(res);
+});
+
 app.get("/billboard100", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
@@ -169,16 +183,6 @@ app.get("/billboard100", function(req, res) {
     ]
   ).stream();
   stream.pipe(res);
-
-  // var stream = x(
-  //   "https://www.billboard.com/charts/hot-100",
-  //   ".chart-number-one__details",
-  //   {
-  //     title: ".chart-number-one__title",
-  //     artist: ".chart-number-one__artist a"
-  //   }
-  // ).stream();
-  // stream.pipe(res);
 });
 
 app.listen(process.env.PORT || 8888, () => {

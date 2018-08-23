@@ -16,28 +16,28 @@ class App extends Component {
       loggedIn: token ? true : false,
       nowPlaying: { name: "Not Checked", albumArt: "" },
       billboardPlaylistUrl: "",
+      tracks: [],
       uris: []
     };
   }
 
   componentDidMount() {
     axios
-      .get("/billboard100")
-      .then(response => {
-        return response.data;
-      })
-      .then(tracks => {
-        for (const track of tracks) {
-          spotifyApi
-            .searchTracks(`${track.title}`, { limit: 1 })
-            .then(response => {
-              this.setState({
-                uris: this.state.uris.concat([response.tracks.items[0].uri])
+      .all([axios.get("/billboard1"), axios.get("/billboard100")])
+      .then(
+        axios.spread((array1, array2) => {
+          const tracks = array1.data.concat(array2.data);
+          for (const track of tracks) {
+            spotifyApi
+              .searchTracks(`${track.title}`, { limit: 1 })
+              .then(response => {
+                this.setState({
+                  uris: this.state.uris.concat([response.tracks.items[0].uri])
+                });
               });
-            });
-        }
-        console.log("Added tracks to the uris state");
-      })
+          }
+        })
+      )
       .catch(error => {
         console.log(error);
       });
