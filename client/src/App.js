@@ -9,12 +9,14 @@ class App extends Component {
     super(props);
     const params = this.getHashParams();
     const token = params.access_token;
+    const refresh_token = params.refresh_token;
     if (token) {
       spotifyApi.setAccessToken(token);
     }
     this.state = {
       loggedIn: token ? true : false,
       userId: "",
+      refreshToken: refresh_token,
       nowPlaying: { name: "Not Checked", albumArt: "" },
       billboardPlaylistId: "",
       billboardPlaylistImg: "",
@@ -25,11 +27,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    spotifyApi.getMe().then(response => {
-      this.setState({
-        userId: response.id
+    spotifyApi
+      .getMe()
+      .then(response => {
+        this.setState({
+          userId: response.id
+        });
+      })
+      .catch(error => {
+        if (error) {
+          this.getRefreshToken();
+        }
       });
-    });
 
     axios
       .all([axios.get("/billboard1"), axios.get("/billboard100")])
@@ -64,7 +73,9 @@ class App extends Component {
         });
       })
       .catch(error => {
-        console.log(error);
+        if (error) {
+          this.getRefreshToken();
+        }
       });
   };
 
@@ -101,13 +112,27 @@ class App extends Component {
         });
       })
       .catch(error => {
-        console.log(error);
+        if (error) {
+          this.getRefreshToken();
+        }
       });
   };
 
   createSavedTracksPlaylist = () => {};
 
-  getRefreshToken = () => {};
+  getRefreshToken = () => {
+    axios
+      .get("/refresh_token", {
+        params: { refresh_token: this.state.refreshToken }
+      })
+      .then(response => {
+        console.log(response);
+        spotifyApi.setAccessToken(response.data.access_token);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   getHashParams = () => {
     var hashParams = {};
@@ -141,6 +166,9 @@ class App extends Component {
             </button>
             <button onClick={() => this.createPlaylist()}>
               Create Playlist
+            </button>
+            <button onClick={() => this.getRefreshToken()}>
+              Get Refresh Token
             </button>
           </div>
         )}
