@@ -143,14 +143,44 @@ class App extends Component {
     }
   };
 
+  addArtist = (id, name) => {
+    if (this.state.playlistArtists.length === 10) {
+      console.log("You've reached the limit, only ten artists!");
+    } else {
+      this.setState({
+        playlistArtists: this.state.playlistArtists.concat([
+          { id: id, name: name }
+        ])
+      });
+    }
+  };
+
+  shuffle = a => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  removeItem = index => {
+    this.setState({
+      playlistArtists: this.state.playlistArtists.filter((_, i) => i === index)
+    });
+  };
+
   getTracks = () => {
+    for (var i = 0; i <= 2; i++) {
+      this.removeItem(i);
+    }
+    // const shuffledPosts = this.shuffle(this.state.artistsTopTracks);
+    const shuffledPosts = this.state.artistsTopTracks;
     const trackUris = [];
-    for (const track of this.state.artistsTopTracks) {
+    for (const track of shuffledPosts) {
       trackUris.push(track.uri);
       this.setState({
         artistTopTracksUris: this.state.artistTopTracksUris.concat(trackUris)
       });
-      // console.log(this.state.artistTopTracksUris);
     }
   };
 
@@ -197,14 +227,21 @@ class App extends Component {
     });
   };
 
-  createArtistPlaylist = e => {
+  removeArtist = id => {
+    this.setState(currentState => {
+      return {
+        playlistArtists: currentState.playlistArtists.filter(
+          artist => artist.id !== id
+        )
+      };
+    });
+  };
+
+  searchArtist = e => {
     e.preventDefault();
-    console.log(this.state.artist);
     spotifyApi
       .searchArtists(this.state.artist, { limit: 10 })
       .then(response => {
-        console.log("Search results");
-        console.log(response.artists.items);
         this.setState({
           artist: "",
           artists: response.artists.items
@@ -213,18 +250,6 @@ class App extends Component {
       .catch(error => {
         console.log(error);
       });
-  };
-
-  addArtist = (id, name) => {
-    if (this.state.playlistArtists.length === 10) {
-      console.log("You've reached the limint, only ten artists!");
-    } else {
-      this.setState({
-        playlistArtists: this.state.playlistArtists.concat([
-          { id: id, name: name }
-        ])
-      });
-    }
   };
 
   updateArtist = e => {
@@ -292,22 +317,38 @@ class App extends Component {
               Current Artists:
               {this.state.playlistArtists.map(item => (
                 <li key={item.id}>
-                  <a onClick={() => this.addArtist(item.id, item.name)}>
-                    {item.name}
-                  </a>{" "}
+                  {item.name}
+                  <button onClick={() => this.removeArtist(item.id)}>
+                    Remove
+                  </button>
                 </li>
               ))}
             </ul>
-
-            <form onSubmit={this.createArtistPlaylist}>
-              <input
-                type="text"
-                value={this.state.artist}
-                onChange={this.updateArtist}
-                required
-              />
-              <button type="submit">Submit</button>
-            </form>
+            {this.state.playlistArtists.length !== 10 && (
+              <div>
+                <form onSubmit={this.searchArtist}>
+                  <input
+                    type="text"
+                    value={this.state.artist}
+                    onChange={this.updateArtist}
+                    required
+                  />
+                  <button type="submit">Submit</button>
+                </form>
+                <ul>
+                  {this.state.artists.map(item => (
+                    <li key={item.id}>
+                      {item.name}
+                      <button
+                        onClick={() => this.addArtist(item.id, item.name)}
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
         {this.state.billboardPlaylistCreated && (
@@ -345,16 +386,6 @@ class App extends Component {
             </li>
           ))}
         </ul> */}
-
-        <ul>
-          {this.state.artists.map(item => (
-            <li key={item.id}>
-              <a onClick={() => this.addArtist(item.id, item.name)}>
-                {item.name}
-              </a>{" "}
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
