@@ -155,6 +155,43 @@ class App extends Component {
     }
   };
 
+  getRelatedArtists = (id, name) => {
+    this.setState({
+      playlistArtists: this.state.playlistArtists.concat([
+        { id: id, name: name }
+      ])
+    });
+    spotifyApi
+      .getArtistRelatedArtists(id)
+      .then(response => {
+        console.log(response.artists);
+        for (const artist of response.artists) {
+          if (this.state.playlistArtists.length === 10) {
+            console.log("You've reached the limit, only ten artists!");
+          } else {
+            this.setState({
+              playlistArtists: this.state.playlistArtists.concat([
+                {
+                  id: artist.id,
+                  name: artist.name,
+                  image: artist.images[1].url
+                }
+              ])
+            });
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  removeSomeArtists = () => {
+    for (var i = 0; i <= 2; i++) {
+      this.removeItem(i);
+    }
+  };
+
   shuffle = a => {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -170,9 +207,6 @@ class App extends Component {
   };
 
   getTracks = () => {
-    for (var i = 0; i <= 2; i++) {
-      this.removeItem(i);
-    }
     // const shuffledPosts = this.shuffle(this.state.artistsTopTracks);
     const shuffledPosts = this.state.artistsTopTracks;
     const trackUris = [];
@@ -240,8 +274,9 @@ class App extends Component {
   searchArtist = e => {
     e.preventDefault();
     spotifyApi
-      .searchArtists(this.state.artist, { limit: 10 })
+      .searchArtists(this.state.artist, { limit: 5 })
       .then(response => {
+        console.log(response.artists.items);
         this.setState({
           artist: "",
           artists: response.artists.items
@@ -306,6 +341,9 @@ class App extends Component {
             <button onClick={() => this.createPlaylist()}>
               Create Playlist
             </button>
+            <button onClick={() => this.removeSomeArtists()}>
+              Remove Some Artists
+            </button>
             <button onClick={() => this.artistPlaylist()}>
               Add tracks of selected artists
             </button>
@@ -317,6 +355,7 @@ class App extends Component {
               Current Artists:
               {this.state.playlistArtists.map(item => (
                 <li key={item.id}>
+                  {/* <img src={item.image} alt="" /> */}
                   {item.name}
                   <button onClick={() => this.removeArtist(item.id)}>
                     Remove
@@ -338,11 +377,19 @@ class App extends Component {
                 <ul>
                   {this.state.artists.map(item => (
                     <li key={item.id}>
+                      {/* <img src={item.images[1].url} alt="" /> */}
                       {item.name}
                       <button
                         onClick={() => this.addArtist(item.id, item.name)}
                       >
                         Add
+                      </button>
+                      <button
+                        onClick={() =>
+                          this.getRelatedArtists(item.id, item.name)
+                        }
+                      >
+                        Search Related
                       </button>
                     </li>
                   ))}
