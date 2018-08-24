@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import Home from "./Home";
+import Billboard from "./Billboard";
+import Artist from "./Artist";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 import "./App.css";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
@@ -14,22 +18,7 @@ class App extends Component {
     }
     this.state = {
       loggedIn: token ? true : false,
-      userId: "",
-      nowPlaying: { name: "Not Checked", albumArt: "" },
-      billboardPlaylistId: "",
-      billboardPlaylistImg: "",
-      billboardPlaylistCreated: false,
-      billboardPlaylist: {},
-      songs: [],
-      uris: [],
-      artist: "",
-      artists: [],
-      playlistArtists: [],
-      artistsTopTracks: [],
-      artistTopTracksUris: [],
-      artistTopTracksPlaylistId: "",
-      artistPlaylistCreated: false,
-      artistPlaylist: {}
+      userId: ""
     };
   }
 
@@ -38,260 +27,16 @@ class App extends Component {
       .getMe()
       .then(response => {
         this.setState({
-          userId: response.id
+          userId: response.id,
+          displayName: response.display_name
         });
       })
       .catch(error => {
         if (error) {
           this.getRefreshToken();
         }
-      });
-
-    axios
-      .all([axios.get("/billboard1"), axios.get("/billboard100")])
-      .then(
-        axios.spread((array1, array2) => {
-          const tracks = array1.data.concat(array2.data);
-          this.setState({
-            songs: tracks
-          });
-        })
-      )
-      .catch(error => {
-        console.log(error);
       });
   }
-
-  getNowPlaying = () => {
-    spotifyApi
-      .getMyCurrentPlaybackState()
-      .then(response => {
-        this.setState({
-          nowPlaying: {
-            name: response.item.name,
-            albumArt: response.item.album.images[0].url
-          }
-        });
-      })
-      .catch(error => {
-        if (error) {
-          this.getRefreshToken();
-        }
-      });
-  };
-
-  createPlaylist = () => {
-    for (const track of this.state.songs) {
-      spotifyApi.searchTracks(`${track.title}`, { limit: 1 }).then(response => {
-        this.setState({
-          uris: this.state.uris.concat([response.tracks.items[0].uri])
-        });
-      });
-    }
-    spotifyApi
-      .createPlaylist(this.state.userId, {
-        name: "Billboard 100",
-        public: true
-      })
-      .then(playlist => {
-        console.log("Created playlist");
-        this.setState({
-          billboardPlaylistId: playlist.id
-        });
-        return spotifyApi.addTracksToPlaylist(
-          playlist.owner.id,
-          playlist.id,
-          this.state.uris
-        );
-      })
-      .then(finalPlaylist => {
-        console.log("Added tracks to your playlist");
-        console.log(finalPlaylist);
-        return spotifyApi.getPlaylist(
-          this.state.userId,
-          this.state.billboardPlaylistId
-        );
-      })
-      .then(response => {
-        this.setState({
-          billboardPlaylistCreated: true,
-          billboardPlaylist: response
-        });
-      })
-      .catch(error => {
-        if (error) {
-          this.getRefreshToken();
-        }
-      });
-  };
-
-  artistPlaylist = () => {
-    for (const artist of this.state.playlistArtists) {
-      spotifyApi
-        .getArtistTopTracks(artist.id, "US")
-        .then(response => {
-          console.log(response);
-          this.setState({
-            artistsTopTracks: this.state.artistsTopTracks.concat(
-              response.tracks
-            )
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  };
-
-  addArtist = (id, name) => {
-    if (this.state.playlistArtists.length === 10) {
-      console.log("You've reached the limit, only ten artists!");
-    } else {
-      this.setState({
-        playlistArtists: this.state.playlistArtists.concat([
-          { id: id, name: name }
-        ])
-      });
-    }
-  };
-
-  getRelatedArtists = (id, name) => {
-    this.setState({
-      playlistArtists: this.state.playlistArtists.concat([
-        { id: id, name: name }
-      ])
-    });
-    spotifyApi
-      .getArtistRelatedArtists(id)
-      .then(response => {
-        console.log(response.artists);
-        for (const artist of response.artists) {
-          if (this.state.playlistArtists.length === 10) {
-            console.log("You've reached the limit, only ten artists!");
-          } else {
-            this.setState({
-              playlistArtists: this.state.playlistArtists.concat([
-                {
-                  id: artist.id,
-                  name: artist.name,
-                  image: artist.images[1].url
-                }
-              ])
-            });
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  removeSomeArtists = () => {
-    for (var i = 0; i <= 2; i++) {
-      this.removeItem(i);
-    }
-  };
-
-  shuffle = a => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
-
-  removeItem = index => {
-    this.setState({
-      playlistArtists: this.state.playlistArtists.filter((_, i) => i === index)
-    });
-  };
-
-  getTracks = () => {
-    // const shuffledPosts = this.shuffle(this.state.artistsTopTracks);
-    const shuffledPosts = this.state.artistsTopTracks;
-    const trackUris = [];
-    for (const track of shuffledPosts) {
-      trackUris.push(track.uri);
-      this.setState({
-        artistTopTracksUris: this.state.artistTopTracksUris.concat(trackUris)
-      });
-    }
-  };
-
-  createFinalPlaylist = () => {
-    spotifyApi
-      .createPlaylist(this.state.userId, {
-        name: "Test Playlist",
-        public: true
-      })
-      .then(playlist => {
-        console.log("Created Playlist");
-        this.setState({
-          artistTopTracksPlaylistId: playlist.id
-        });
-        return spotifyApi.addTracksToPlaylist(
-          this.state.userId,
-          playlist.id,
-          this.state.artistTopTracksUris
-        );
-      })
-      .then(response => {
-        console.log("Added tracks to your playlist");
-        return spotifyApi.getPlaylist(
-          this.state.userId,
-          this.state.artistTopTracksPlaylistId
-        );
-      })
-      .then(playlist => {
-        this.setState({
-          artistPlaylistCreated: true,
-          artistPlaylist: playlist
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  removeTrack = title => {
-    this.setState(currentState => {
-      return {
-        songs: currentState.songs.filter(song => song.title !== title)
-      };
-    });
-  };
-
-  removeArtist = id => {
-    this.setState(currentState => {
-      return {
-        playlistArtists: currentState.playlistArtists.filter(
-          artist => artist.id !== id
-        )
-      };
-    });
-  };
-
-  searchArtist = e => {
-    e.preventDefault();
-    spotifyApi
-      .searchArtists(this.state.artist, { limit: 5 })
-      .then(response => {
-        console.log(response.artists.items);
-        this.setState({
-          artist: "",
-          artists: response.artists.items
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  updateArtist = e => {
-    this.setState({
-      artist: e.target.value
-    });
-  };
 
   getRefreshToken = () => {
     const params = this.getHashParams();
@@ -321,118 +66,64 @@ class App extends Component {
     return hashParams;
   };
 
+  renderLinks = () => {
+    if (this.state.loggedIn === true) {
+      return (
+        <div>
+          <div>
+            <Link to={`/billboard/${window.location.hash}`}>Billboard</Link>
+          </div>
+
+          <div>
+            <Link to={`/artist/${window.location.hash}`}>Artist</Link>
+          </div>
+        </div>
+      );
+    }
+  };
+
   render() {
     return (
-      <div className="App">
-        <a href="http://localhost:8888"> Login to Spotify </a>
-        <div>Now Playing: {this.state.nowPlaying.name}</div>
-        <div>
-          <img
-            src={this.state.nowPlaying.albumArt}
-            alt=""
-            style={{ height: 150 }}
-          />
-        </div>
-        {this.state.loggedIn && (
+      <div>
+        <BrowserRouter>
           <div>
-            <button onClick={() => this.getNowPlaying()}>
-              Check Now Playing
-            </button>
-            <button onClick={() => this.createPlaylist()}>
-              Create Playlist
-            </button>
-            <button onClick={() => this.removeSomeArtists()}>
-              Remove Some Artists
-            </button>
-            <button onClick={() => this.artistPlaylist()}>
-              Add tracks of selected artists
-            </button>
-            <button onClick={() => this.getTracks()}>See tracklist</button>
-            <button onClick={() => this.createFinalPlaylist()}>
-              Create Artist Playlist
-            </button>
-            <ul>
-              Current Artists:
-              {this.state.playlistArtists.map(item => (
-                <li key={item.id}>
-                  {/* <img src={item.image} alt="" /> */}
-                  {item.name}
-                  <button onClick={() => this.removeArtist(item.id)}>
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {this.state.playlistArtists.length !== 10 && (
+            <div>
               <div>
-                <form onSubmit={this.searchArtist}>
-                  <input
-                    type="text"
-                    value={this.state.artist}
-                    onChange={this.updateArtist}
-                    required
-                  />
-                  <button type="submit">Submit</button>
-                </form>
-                <ul>
-                  {this.state.artists.map(item => (
-                    <li key={item.id}>
-                      {/* <img src={item.images[1].url} alt="" /> */}
-                      {item.name}
-                      <button
-                        onClick={() => this.addArtist(item.id, item.name)}
-                      >
-                        Add
-                      </button>
-                      <button
-                        onClick={() =>
-                          this.getRelatedArtists(item.id, item.name)
-                        }
-                      >
-                        Search Related
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                <Link to={`/${window.location.hash}`}>Home</Link>
               </div>
-            )}
-          </div>
-        )}
-        {this.state.billboardPlaylistCreated && (
-          <div>
-            <img src={this.state.artistPlaylist.images[1].url} alt="" />
-            <div>
-              View your playlist{" "}
-              <a href={this.state.artistPlaylist.external_urls.spotify}>
-                {" "}
-                here{" "}
-              </a>
             </div>
-          </div>
-        )}
 
-        {this.state.billboardPlaylistCreated && (
-          <div>
-            <img src={this.state.billboardPlaylist.images[1].url} alt="" />
-            <div>
-              View your playlist{" "}
-              <a href={this.state.billboardPlaylist.external_urls.spotify}>
-                {" "}
-                here{" "}
-              </a>
-            </div>
+            {this.renderLinks()}
+
+            {this.state.loggedIn && <h1>Welcome {this.state.displayName}</h1>}
+            <hr />
+
+            <Route exact path="/" component={Home} />
+
+            <Route
+              path="/billboard"
+              render={() => {
+                return (
+                  <Billboard
+                    loggedIn={this.state.loggedIn}
+                    userId={this.state.userId}
+                  />
+                );
+              }}
+            />
+            <Route
+              path="/artist"
+              render={() => {
+                return (
+                  <Artist
+                    loggedIn={this.state.loggedIn}
+                    userId={this.state.userId}
+                  />
+                );
+              }}
+            />
           </div>
-        )}
-        {/* <ul>
-          {this.state.songs.map((item, index) => (
-            <li key={index}>
-              {item.artist} - {item.title}{" "}
-              <button onClick={() => this.removeTrack(item.title)}>
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul> */}
+        </BrowserRouter>
       </div>
     );
   }
