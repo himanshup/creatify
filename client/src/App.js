@@ -9,20 +9,27 @@ class App extends Component {
     super(props);
     const params = this.getHashParams();
     const token = params.access_token;
-    const refresh_token = params.refresh_token;
     if (token) {
       spotifyApi.setAccessToken(token);
     }
     this.state = {
       loggedIn: token ? true : false,
       userId: "",
-      refreshToken: refresh_token,
       nowPlaying: { name: "Not Checked", albumArt: "" },
       billboardPlaylistId: "",
       billboardPlaylistImg: "",
       billboardPlaylistCreated: false,
       billboardPlaylist: {},
-      uris: []
+      songs: [],
+      uris: [],
+      artist: "",
+      artists: [],
+      playlistArtists: [],
+      artistsTopTracks: [],
+      artistTopTracksUris: [],
+      artistTopTracksPlaylistId: "",
+      artistPlaylistCreated: false,
+      artistPlaylist: {}
     };
   }
 
@@ -45,15 +52,9 @@ class App extends Component {
       .then(
         axios.spread((array1, array2) => {
           const tracks = array1.data.concat(array2.data);
-          for (const track of tracks) {
-            spotifyApi
-              .searchTracks(`${track.title}`, { limit: 1 })
-              .then(response => {
-                this.setState({
-                  uris: this.state.uris.concat([response.tracks.items[0].uri])
-                });
-              });
-          }
+          this.setState({
+            songs: tracks
+          });
         })
       )
       .catch(error => {
@@ -80,6 +81,13 @@ class App extends Component {
   };
 
   createPlaylist = () => {
+    for (const track of this.state.songs) {
+      spotifyApi.searchTracks(`${track.title}`, { limit: 1 }).then(response => {
+        this.setState({
+          uris: this.state.uris.concat([response.tracks.items[0].uri])
+        });
+      });
+    }
     spotifyApi
       .createPlaylist(this.state.userId, {
         name: "Billboard 100",
@@ -105,7 +113,6 @@ class App extends Component {
         );
       })
       .then(response => {
-        console.log("Here is your final playlist:");
         this.setState({
           billboardPlaylistCreated: true,
           billboardPlaylist: response
@@ -118,15 +125,122 @@ class App extends Component {
       });
   };
 
-  createSavedTracksPlaylist = () => {};
+  artistPlaylist = () => {
+    for (const artist of this.state.playlistArtists) {
+      spotifyApi
+        .getArtistTopTracks(artist.id, "US")
+        .then(response => {
+          console.log(response);
+          this.setState({
+            artistsTopTracks: this.state.artistsTopTracks.concat(
+              response.tracks
+            )
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
 
-  getRefreshToken = () => {
-    axios
-      .get("/refresh_token", {
-        params: { refresh_token: this.state.refreshToken }
+  getTracks = () => {
+    const trackUris = [];
+    for (const track of this.state.artistsTopTracks) {
+      trackUris.push(track.uri);
+      this.setState({
+        artistTopTracksUris: this.state.artistTopTracksUris.concat(trackUris)
+      });
+      // console.log(this.state.artistTopTracksUris);
+    }
+  };
+
+  createFinalPlaylist = () => {
+    spotifyApi
+      .createPlaylist(this.state.userId, {
+        name: "Test Playlist",
+        public: true
+      })
+      .then(playlist => {
+        console.log("Created Playlist");
+        this.setState({
+          artistTopTracksPlaylistId: playlist.id
+        });
+        return spotifyApi.addTracksToPlaylist(
+          this.state.userId,
+          playlist.id,
+          this.state.artistTopTracksUris
+        );
       })
       .then(response => {
-        console.log(response);
+        console.log("Added tracks to your playlist");
+        return spotifyApi.getPlaylist(
+          this.state.userId,
+          this.state.artistTopTracksPlaylistId
+        );
+      })
+      .then(playlist => {
+        this.setState({
+          artistPlaylistCreated: true,
+          artistPlaylist: playlist
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  removeTrack = title => {
+    this.setState(currentState => {
+      return {
+        songs: currentState.songs.filter(song => song.title !== title)
+      };
+    });
+  };
+
+  createArtistPlaylist = e => {
+    e.preventDefault();
+    console.log(this.state.artist);
+    spotifyApi
+      .searchArtists(this.state.artist, { limit: 10 })
+      .then(response => {
+        console.log("Search results");
+        console.log(response.artists.items);
+        this.setState({
+          artist: "",
+          artists: response.artists.items
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  addArtist = (id, name) => {
+    if (this.state.playlistArtists.length === 10) {
+      console.log("You've reached the limint, only ten artists!");
+    } else {
+      this.setState({
+        playlistArtists: this.state.playlistArtists.concat([
+          { id: id, name: name }
+        ])
+      });
+    }
+  };
+
+  updateArtist = e => {
+    this.setState({
+      artist: e.target.value
+    });
+  };
+
+  getRefreshToken = () => {
+    const params = this.getHashParams();
+    const refresh_token = params.refresh_token;
+    axios
+      .get("/refresh_token", {
+        params: { refresh_token: refresh_token }
+      })
+      .then(response => {
         spotifyApi.setAccessToken(response.data.access_token);
       })
       .catch(error => {
@@ -167,11 +281,48 @@ class App extends Component {
             <button onClick={() => this.createPlaylist()}>
               Create Playlist
             </button>
-            <button onClick={() => this.getRefreshToken()}>
-              Get Refresh Token
+            <button onClick={() => this.artistPlaylist()}>
+              Add tracks of selected artists
             </button>
+            <button onClick={() => this.getTracks()}>See tracklist</button>
+            <button onClick={() => this.createFinalPlaylist()}>
+              Create Artist Playlist
+            </button>
+            <ul>
+              Current Artists:
+              {this.state.playlistArtists.map(item => (
+                <li key={item.id}>
+                  <a onClick={() => this.addArtist(item.id, item.name)}>
+                    {item.name}
+                  </a>{" "}
+                </li>
+              ))}
+            </ul>
+
+            <form onSubmit={this.createArtistPlaylist}>
+              <input
+                type="text"
+                value={this.state.artist}
+                onChange={this.updateArtist}
+                required
+              />
+              <button type="submit">Submit</button>
+            </form>
           </div>
         )}
+        {this.state.billboardPlaylistCreated && (
+          <div>
+            <img src={this.state.artistPlaylist.images[1].url} alt="" />
+            <div>
+              View your playlist{" "}
+              <a href={this.state.artistPlaylist.external_urls.spotify}>
+                {" "}
+                here{" "}
+              </a>
+            </div>
+          </div>
+        )}
+
         {this.state.billboardPlaylistCreated && (
           <div>
             <img src={this.state.billboardPlaylist.images[1].url} alt="" />
@@ -185,12 +336,25 @@ class App extends Component {
           </div>
         )}
         {/* <ul>
-          {this.state.songs.map(item => (
-            <li key={item.title}>
-              {item.artist} - {item.title}
+          {this.state.songs.map((item, index) => (
+            <li key={index}>
+              {item.artist} - {item.title}{" "}
+              <button onClick={() => this.removeTrack(item.title)}>
+                Remove
+              </button>
             </li>
           ))}
         </ul> */}
+
+        <ul>
+          {this.state.artists.map(item => (
+            <li key={item.id}>
+              <a onClick={() => this.addArtist(item.id, item.name)}>
+                {item.name}
+              </a>{" "}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
