@@ -43,9 +43,9 @@ class Home extends Component {
           <Row>
             <Col>
               <p className="lead mt-3 infotxt">
-                Create a playlist with songs from the Billboard Hot 100.
-                Clicking create will show a list of the songs so you can remove
-                any you don't like.
+                Create a playlist with songs from the Billboard Hot 100. Click
+                the button to see a list of the songs. You can remove any you
+                don't like.
               </p>
               <Link
                 className="btn badge-pill btn-success btn-lg"
@@ -58,8 +58,9 @@ class Home extends Component {
             </Col>
             <Col>
               <p className="lead mt-3 infotxt">
-                Search for an artist and it will make a playlist with their top
-                tracks and related artist's top tracks.
+                Create a playlist based on an artist. Simply search for an
+                artist and it will get a list of related artists + top tracks
+                for each artist.
               </p>
               <Row>
                 <Col />
@@ -67,7 +68,7 @@ class Home extends Component {
                   <Input
                     type="text"
                     name="artist"
-                    placeholder="Artist name"
+                    placeholder="Artist Name"
                     className="rounded-0"
                     value={this.state.artist}
                     onChange={this.updateArtist}

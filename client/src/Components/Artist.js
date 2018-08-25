@@ -239,7 +239,7 @@ class Artist extends Component {
                 )}
               </div>
             )}
-            <Row className="mt-5">
+            <Row className="mt-4">
               {this.state.artists.map((item, index) => (
                 <Col sm="6" md="4" lg="3" key={index}>
                   <Card className="mt-4 shadow-sm border-0 rounded-0">
