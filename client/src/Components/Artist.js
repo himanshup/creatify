@@ -1,5 +1,17 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import SpotifyWebApi from "spotify-web-api-js";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  CardImg,
+  CardBody,
+  Input
+} from "reactstrap";
+
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
@@ -9,6 +21,7 @@ class Artist extends Component {
       loggedIn: props.loggedIn,
       userId: props.userId,
       artist: props.params.artist,
+      searchItem: props.params.artist,
       artists: [],
       playlistArtists: [],
       artistsTopTracks: [],
@@ -34,7 +47,7 @@ class Artist extends Component {
       });
   }
 
-  artistPlaylist = () => {
+  getAllArtistsTopTracks = () => {
     for (const artist of this.state.playlistArtists) {
       spotifyApi
         .getArtistTopTracks(artist.id, "US")
@@ -52,17 +65,17 @@ class Artist extends Component {
     }
   };
 
-  addArtist = (id, name) => {
-    if (this.state.playlistArtists.length === 10) {
-      console.log("You've reached the limit, only ten artists!");
-    } else {
-      this.setState({
-        playlistArtists: this.state.playlistArtists.concat([
-          { id: id, name: name }
-        ])
-      });
-    }
-  };
+  // addArtist = (id, name) => {
+  //   if (this.state.playlistArtists.length === 10) {
+  //     console.log("You've reached the limit, only ten artists!");
+  //   } else {
+  //     this.setState({
+  //       playlistArtists: this.state.playlistArtists.concat([
+  //         { id: id, name: name }
+  //       ])
+  //     });
+  //   }
+  // };
 
   getRelatedArtists = (id, name) => {
     this.setState({
@@ -160,13 +173,14 @@ class Artist extends Component {
     });
   };
 
-  searchArtist = e => {
-    e.preventDefault();
+  searchArtist = () => {
+    // e.preventDefault();
     spotifyApi
       .searchArtists(this.state.artist, { limit: 5 })
       .then(response => {
         console.log(response.artists.items);
         this.setState({
+          searchItem: this.state.artist,
           artist: "",
           artists: response.artists.items
         });
@@ -184,72 +198,72 @@ class Artist extends Component {
 
   render() {
     return (
-      <div>
+      <Container className="mb-5">
+        <h1 className="mt-3 text-center">
+          Results for {this.state.searchItem}
+        </h1>
+        <p className="text-center">
+          Search for an artist and then click on them to get a list of related
+          artists.
+        </p>
         {this.state.loggedIn && (
           <div>
-            <button onClick={() => this.artistPlaylist()}>
-              Add tracks of selected artists
-            </button>
-            <button onClick={() => this.getTracks()}>See tracklist</button>
-            <button onClick={() => this.createFinalPlaylist()}>
-              Create Artist Playlist
-            </button>
-            <ul>
-              Current Artists {this.state.playlistArtists.length} (Max 10):
-              {this.state.playlistArtists.map(item => (
-                <li key={item.id}>
-                  {/* <img src={item.image} alt="" /> */}
-                  {item.name}
-                  <button onClick={() => this.removeArtist(item.id)}>
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
             {this.state.playlistArtists.length !== 10 && (
               <div>
-                <form onSubmit={this.searchArtist}>
-                  <input
-                    type="text"
-                    value={this.state.artist}
-                    onChange={this.updateArtist}
-                    required
-                  />
-                  <button type="submit">Submit</button>
-                </form>
+                <Row>
+                  <Col />
+                  <Col sm="6" lg="5" className="text-center">
+                    <Input
+                      type="text"
+                      name="artist"
+                      placeholder="Artist name"
+                      className="rounded-0"
+                      value={this.state.artist}
+                      onChange={this.updateArtist}
+                      required
+                    />
+                  </Col>
+                  <Col />
+                </Row>
+                {this.state.artist && (
+                  <div className="text-center">
+                    <Button
+                      className="btn badge-pill btn-success btn-lg mt-4"
+                      onClick={() => this.searchArtist()}
+                    >
+                      <span id="go" className="p-4 text-uppercase">
+                        Search Artist
+                      </span>
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
-            <ul>
-              {this.state.artists.map(item => (
-                <li key={item.id}>
-                  {/* <img src={item.images[1].url} alt="" /> */}
-                  {item.name}
-                  <button onClick={() => this.addArtist(item.id, item.name)}>
-                    Add
-                  </button>
-                  <button
-                    onClick={() => this.getRelatedArtists(item.id, item.name)}
-                  >
-                    Search Related
-                  </button>
-                </li>
+            <Row className="mt-5">
+              {this.state.artists.map((item, index) => (
+                <Col sm="6" md="4" lg="3" key={index}>
+                  <Card className="mt-4 shadow-sm border-0 rounded-0">
+                    <Link to={`/create/${item.id}/${window.location.hash}`}>
+                      <CardImg
+                        className="rounded-0"
+                        top
+                        width=""
+                        src={
+                          item.images.length > 0
+                            ? item.images[0].url
+                            : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                        }
+                        alt=""
+                      />
+                    </Link>
+                    <CardBody>{item.name}</CardBody>
+                  </Card>
+                </Col>
               ))}
-            </ul>
+            </Row>
           </div>
         )}
-        {this.state.artistPlaylistCreated && (
-          <div>
-            <img src={this.state.artistPlaylist.images[1].url} alt="" />
-            <div>
-              View your playlist{" "}
-              <a href={this.state.artistPlaylist.external_urls.spotify}>
-                {" "}
-                here{" "}
-              </a>
-            </div>
-          </div>
-        )}
-      </div>
+      </Container>
     );
   }
 }

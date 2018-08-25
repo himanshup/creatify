@@ -45,7 +45,7 @@ class Home extends Component {
               <p className="lead mt-3 infotxt">
                 Create a playlist with songs from the Billboard Hot 100.
                 Clicking create will show a list of the songs so you can remove
-                any you don't want.
+                any you don't like.
               </p>
               <Link
                 className="btn badge-pill btn-success btn-lg"

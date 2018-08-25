@@ -1,10 +1,24 @@
+#go {
+  letter-spacing: 1px;
+}
+
+/* .card-img-top {
+  height: 360px;
+  width: 360px;
+} */
+
 .jumbotron {
-  background: #f7f7f7 !important;
+  background: #f8f8f8 !important;
   min-height: 500px;
 }
 
-#go {
-  letter-spacing: 1px;
+.lead {
+  font-size: 1.35rem !important;
+}
+
+.navbar {
+  min-height: 80px;
+  background: #191414;
 }
 
 textarea:focus,
@@ -30,14 +44,6 @@ input[type="color"]:focus,
     box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-}
-
-.lead {
-  font-size: 1.35rem !important;
-}
-
-.navbar {
-  height: 80px;
 }
 
 .btn-success {

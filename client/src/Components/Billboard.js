@@ -1,18 +1,9 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Button,
-  Table,
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle
-} from "reactstrap";
+import { Container, Button, Table } from "reactstrap";
+import { FaTimes } from "react-icons/fa";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 var spotifyApi = new SpotifyWebApi();
-
 class Billboard extends Component {
   constructor(props) {
     super(props);
@@ -66,7 +57,7 @@ class Billboard extends Component {
     }
     spotifyApi
       .createPlaylist(this.state.userId, {
-        name: "Billboard 100!",
+        name: "Billboard 100",
         public: true
       })
       .then(playlist => {
@@ -121,9 +112,10 @@ class Billboard extends Component {
       <Container className="mb-5">
         {!this.state.billboardPlaylistCreated && (
           <div className="text-center">
-            <h1 className="display-4 mt-3">Billboard Hot 100</h1>
-            <p className="lead">
-              Here are the songs from the Billboard Hot 100
+            <h1 className="mt-3">Billboard Hot 100</h1>
+            <p className="">
+              These are the songs from the Billboard Hot 100. Clicking the
+              button will create a playlist and save it for you.
             </p>
             <Button
               className="btn badge-pill btn-success btn-lg"
@@ -138,20 +130,17 @@ class Billboard extends Component {
 
         {this.state.billboardPlaylistCreated && (
           <div>
-            <h1 className="display-4 mt-3 text-center">Playlist created</h1>
-            <Card className="shadow-sm border-0 rounded-0 w-25 mx-auto">
-              <a href={this.state.billboardPlaylist.external_urls.spotify}>
-                <CardImg
-                  top
-                  src={this.state.billboardPlaylist.images[1].url}
-                  alt=""
-                />
+            <h1 className="mt-3 text-center">Playlist created</h1>
+            <div className="text-center">
+              View your playlist{" "}
+              <a
+                href={this.state.billboardPlaylist.external_urls.spotify}
+                className="text-success"
+              >
+                here
               </a>
-              <CardBody>
-                <CardTitle>{this.state.billboardPlaylist.name}</CardTitle>
-                <CardText>{this.state.billboardPlaylist.description}</CardText>
-              </CardBody>
-            </Card>
+              .
+            </div>
           </div>
         )}
         {!this.state.billboardPlaylistCreated && (
@@ -169,7 +158,13 @@ class Billboard extends Component {
                   <tr key={index}>
                     <th scope="row">{item.rank}</th>
                     <td>{item.title}</td>
-                    <td>{item.artist}</td>
+                    <td>
+                      {item.artist}
+                      <FaTimes
+                        className="float-right"
+                        onClick={() => this.removeTrack(item.title)}
+                      />
+                    </td>
                   </tr>
                 ))}
             </tbody>

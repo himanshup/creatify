@@ -13,9 +13,10 @@ import axios from "axios";
 import Home from "./Home";
 import Billboard from "./Billboard";
 import Artist from "./Artist";
+import RelatedArtists from "./RelatedArtists";
+// import logo from "./spotifylogo.png";
 import SpotifyWebApi from "spotify-web-api-js";
 var spotifyApi = new SpotifyWebApi();
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +28,7 @@ class App extends Component {
     this.state = {
       loggedIn: token ? true : false,
       userId: "",
-      displayName: ""
+      isOpen: false
     };
   }
 
@@ -36,14 +37,19 @@ class App extends Component {
       .getMe()
       .then(response => {
         this.setState({
-          userId: response.id,
-          displayName: response.display_name
+          userId: response.id
         });
       })
       .catch(error => {
         console.log(error);
       });
   }
+
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
 
   getRefreshToken = () => {
     const params = this.getHashParams();
@@ -93,9 +99,10 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Navbar color="dark" dark expand="md">
+          <Navbar dark expand="md">
             <Container>
               <Link className="navbar-brand" to={`/${window.location.hash}`}>
+                {/* <img src={logo} alt="" width="170" /> */}
                 Playlist Creator
               </Link>
               <NavbarToggler onClick={this.toggle} />
@@ -118,7 +125,7 @@ class App extends Component {
                     </Link>
                   </NavItem> */}
                   <NavItem>
-                    {this.state.loggedIn !== false && (
+                    {this.state.loggedIn === false && (
                       <a
                         className="btn badge-pill btn-success btn-lg"
                         href="http://localhost:8888/login"
@@ -157,6 +164,18 @@ class App extends Component {
             render={({ match }) => {
               return (
                 <Artist
+                  loggedIn={this.state.loggedIn}
+                  userId={this.state.userId}
+                  params={match.params}
+                />
+              );
+            }}
+          />
+          <Route
+            path={`/create/:artistId`}
+            render={({ match }) => {
+              return (
+                <RelatedArtists
                   loggedIn={this.state.loggedIn}
                   userId={this.state.userId}
                   params={match.params}
