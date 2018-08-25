@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import "./App.css";
+import {
+  Container,
+  Button,
+  Table,
+  Card,
+  CardImg,
+  CardText,
+  CardBody,
+  CardTitle
+} from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 var spotifyApi = new SpotifyWebApi();
@@ -19,9 +28,13 @@ class Billboard extends Component {
     };
   }
 
+  componentDidMount() {
+    this.showBillboard100();
+  }
+
   showBillboard100 = () => {
     axios
-      .all([axios.get("/billboard1"), axios.get("/billboard100")])
+      .all([axios.get("/api/billboard1"), axios.get("/api/billboard100")])
       .then(
         axios.spread((array1, array2) => {
           const tracks = array1.data.concat(array2.data);
@@ -53,7 +66,7 @@ class Billboard extends Component {
     }
     spotifyApi
       .createPlaylist(this.state.userId, {
-        name: "Billboard 100",
+        name: "Billboard 100!",
         public: true
       })
       .then(playlist => {
@@ -105,41 +118,65 @@ class Billboard extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.loggedIn && (
-          <div>
-            <h1>Create a playlist with songs from Billboards Hot 100</h1>
-            <button onClick={() => this.showBillboard100()}>
-              Show Billboard 100
-            </button>
-            <button onClick={() => this.createPlaylist()}>
-              Create Playlist
-            </button>
+      <Container className="mb-5">
+        {!this.state.billboardPlaylistCreated && (
+          <div className="text-center">
+            <h1 className="display-4 mt-3">Billboard Hot 100</h1>
+            <p className="lead">
+              Here are the songs from the Billboard Hot 100
+            </p>
+            <Button
+              className="btn badge-pill btn-success btn-lg"
+              onClick={() => this.createPlaylist()}
+            >
+              <span id="go" className="p-4 text-uppercase">
+                Create Playlist
+              </span>
+            </Button>
           </div>
         )}
+
         {this.state.billboardPlaylistCreated && (
           <div>
-            <img src={this.state.billboardPlaylist.images[1].url} alt="" />
-            <div>
-              View your playlist{" "}
+            <h1 className="display-4 mt-3 text-center">Playlist created</h1>
+            <Card className="shadow-sm border-0 rounded-0 w-25 mx-auto">
               <a href={this.state.billboardPlaylist.external_urls.spotify}>
-                {" "}
-                here{" "}
+                <CardImg
+                  top
+                  src={this.state.billboardPlaylist.images[1].url}
+                  alt=""
+                />
               </a>
-            </div>
+              <CardBody>
+                <CardTitle>{this.state.billboardPlaylist.name}</CardTitle>
+                <CardText>{this.state.billboardPlaylist.description}</CardText>
+              </CardBody>
+            </Card>
           </div>
         )}
-        <ul>
-          {this.state.songs.map((item, index) => (
-            <li key={index}>
-              {item.artist} - {item.title}{" "}
-              <button onClick={() => this.removeTrack(item.title)}>
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+        {!this.state.billboardPlaylistCreated && (
+          <Table className="mt-3" bordered striped>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Artist</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!this.state.billboardPlaylistCreated &&
+                this.state.songs.map((item, index) => (
+                  <tr key={index}>
+                    <th scope="row">{item.rank}</th>
+                    <td>{item.title}</td>
+                    <td>{item.artist}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        )}
+        <ul />
+      </Container>
     );
   }
 }

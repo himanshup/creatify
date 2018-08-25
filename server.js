@@ -157,12 +157,13 @@ app.get("/refresh_token", function(req, res) {
   });
 });
 
-app.get("/billboard1", function(req, res) {
+app.get("/api/billboard1", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
-    ".chart-number-one__details",
+    ".chart-number-one",
     [
       {
+        rank: "[data-rank]@data-rank",
         title: ".chart-number-one__title",
         artist: ".chart-number-one__artist a"
       }
@@ -171,12 +172,13 @@ app.get("/billboard1", function(req, res) {
   stream.pipe(res);
 });
 
-app.get("/billboard100", function(req, res) {
+app.get("/api/billboard100", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
     ".chart-list-item",
     [
       {
+        rank: ".chart-list-item__rank ",
         title: ".chart-list-item__title-text",
         artist: ".chart-list-item__artist"
       }

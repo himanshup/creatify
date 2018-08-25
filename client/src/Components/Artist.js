@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
 import SpotifyWebApi from "spotify-web-api-js";
-// import axios from "axios";
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
@@ -10,7 +8,7 @@ class Artist extends Component {
     this.state = {
       loggedIn: props.loggedIn,
       userId: props.userId,
-      artist: "",
+      artist: props.params.artist,
       artists: [],
       playlistArtists: [],
       artistsTopTracks: [],
@@ -19,6 +17,21 @@ class Artist extends Component {
       artistPlaylistCreated: false,
       artistPlaylist: {}
     };
+  }
+
+  componentDidMount() {
+    spotifyApi
+      .searchArtists(this.state.artist, { limit: 5 })
+      .then(response => {
+        console.log(response.artists.items);
+        this.setState({
+          artist: "",
+          artists: response.artists.items
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   artistPlaylist = () => {
@@ -204,28 +217,24 @@ class Artist extends Component {
                   />
                   <button type="submit">Submit</button>
                 </form>
-                <ul>
-                  {this.state.artists.map(item => (
-                    <li key={item.id}>
-                      {/* <img src={item.images[1].url} alt="" /> */}
-                      {item.name}
-                      <button
-                        onClick={() => this.addArtist(item.id, item.name)}
-                      >
-                        Add
-                      </button>
-                      <button
-                        onClick={() =>
-                          this.getRelatedArtists(item.id, item.name)
-                        }
-                      >
-                        Search Related
-                      </button>
-                    </li>
-                  ))}
-                </ul>
               </div>
             )}
+            <ul>
+              {this.state.artists.map(item => (
+                <li key={item.id}>
+                  {/* <img src={item.images[1].url} alt="" /> */}
+                  {item.name}
+                  <button onClick={() => this.addArtist(item.id, item.name)}>
+                    Add
+                  </button>
+                  <button
+                    onClick={() => this.getRelatedArtists(item.id, item.name)}
+                  >
+                    Search Related
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         {this.state.artistPlaylistCreated && (
