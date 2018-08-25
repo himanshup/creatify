@@ -170,7 +170,6 @@ class Billboard extends Component {
             </tbody>
           </Table>
         )}
-        <ul />
       </Container>
     );
   }

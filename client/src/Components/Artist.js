@@ -216,7 +216,7 @@ class Artist extends Component {
                     <Input
                       type="text"
                       name="artist"
-                      placeholder="Artist name"
+                      placeholder="Artist Name"
                       className="rounded-0"
                       value={this.state.artist}
                       onChange={this.updateArtist}

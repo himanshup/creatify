@@ -47,7 +47,6 @@ class RelatedArtists extends Component {
         return spotifyApi.getArtistRelatedArtists(this.state.searchedArtistId);
       })
       .then(relatedArtists => {
-        console.log(relatedArtists.artists);
         for (const artist of relatedArtists.artists) {
           if (this.state.artists.length === 10) {
           } else {
@@ -72,8 +71,7 @@ class RelatedArtists extends Component {
     for (const artist of this.state.artists) {
       spotifyApi
         .getArtistTopTracks(artist.id, "US")
-        .then(response => {
-          console.log(response);
+        .then(response => {         
           this.setState({
             gotTopTracks: true,
             topTracks: this.state.topTracks.concat(response.tracks)
@@ -95,9 +93,9 @@ class RelatedArtists extends Component {
     spotifyApi
       .getArtistRelatedArtists(id)
       .then(response => {
-        console.log(response.artists);
         for (const artist of response.artists) {
           if (this.state.playlistArtists.length === 10) {
+            break;
           } else {
             this.setState({
               artists: this.state.artists.concat([
@@ -230,7 +228,6 @@ class RelatedArtists extends Component {
                         <Col sm="6" lg="5" className="text-center">
                           <Input
                             type="text"
-                            name="title"
                             placeholder="Playlist Name"
                             className="rounded-0"
                             value={this.state.playlistName}
@@ -276,7 +273,7 @@ class RelatedArtists extends Component {
                 )}
 
                 {this.state.gotTopTracks && (
-                  <Table className="mt-3" bordered striped>
+                  <Table className="mt-4" bordered striped>
                     <thead>
                       <tr>
                         <th>#</th>

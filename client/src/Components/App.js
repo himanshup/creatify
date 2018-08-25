@@ -7,7 +7,8 @@ import {
   Navbar,
   NavbarToggler,
   Nav,
-  NavItem
+  NavItem,
+  NavLink
 } from "reactstrap";
 import axios from "axios";
 import Home from "./Home";
@@ -16,7 +17,9 @@ import Artist from "./Artist";
 import RelatedArtists from "./RelatedArtists";
 // import logo from "./spotifylogo.png";
 import SpotifyWebApi from "spotify-web-api-js";
+
 var spotifyApi = new SpotifyWebApi();
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -28,6 +31,7 @@ class App extends Component {
     this.state = {
       loggedIn: token ? true : false,
       userId: "",
+      displayName: "",
       isOpen: false
     };
   }
@@ -37,7 +41,8 @@ class App extends Component {
       .getMe()
       .then(response => {
         this.setState({
-          userId: response.id
+          userId: response.id,
+          displayName: response.display_name
         });
       })
       .catch(error => {
@@ -108,22 +113,6 @@ class App extends Component {
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
-                  {/* <NavItem>
-                    <Link
-                      className="nav-link"
-                      to={`/billboard/${window.location.hash}`}
-                    >
-                      Billboard
-                    </Link>
-                  </NavItem>
-                  <NavItem>
-                    <Link
-                      className="nav-link"
-                      to={`/artist/${window.location.hash}`}
-                    >
-                      Artist
-                    </Link>
-                  </NavItem> */}
                   <NavItem>
                     {this.state.loggedIn === false && (
                       <a
@@ -135,6 +124,11 @@ class App extends Component {
                         </span>
                       </a>
                     )}
+                  </NavItem>
+                  <NavItem>
+                    <NavLink>
+                      Logged in as {this.state.displayName}
+                    </NavLink>
                   </NavItem>
                 </Nav>
               </Collapse>
