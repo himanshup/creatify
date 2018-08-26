@@ -2,10 +2,20 @@
   letter-spacing: 1px;
 }
 
-/* .card-img-top {
-  height: 250px;
-  width: 340px;
-} */
+.card {
+  -webkit-transition: box-shadow 0.3s ease-in-out;
+  -moz-transition: box-shadow 0.3s ease-in-out;
+  -o-transition: box-shadow 0.2s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  -webkit-transition: box-shadow 0.3s ease-in-out;
+  -moz-transition: box-shadow 0.3s ease-in-out;
+  -o-transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out;
+}
 
 .jumbotron {
   background: #f8f8f8 !important;
@@ -19,6 +29,10 @@
 .navbar {
   min-height: 80px;
   background: #191414;
+}
+
+.navbar-brand {
+  font-size: 26px !important;
 }
 
 textarea:focus,

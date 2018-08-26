@@ -37,6 +37,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // get user info
     spotifyApi
       .getMe()
       .then(response => {
@@ -125,11 +126,11 @@ class App extends Component {
                       </a>
                     )}
                   </NavItem>
-                  <NavItem>
-                    <NavLink>
-                      Logged in as {this.state.displayName}
-                    </NavLink>
-                  </NavItem>
+                  {this.state.loggedIn && (
+                    <NavItem>
+                      <NavLink>Logged in as {this.state.displayName}</NavLink>
+                    </NavItem>
+                  )}
                 </Nav>
               </Collapse>
             </Container>

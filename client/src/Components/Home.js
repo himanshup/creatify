@@ -24,6 +24,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    // gets the top artists for the current user
     spotifyApi
       .getMyTopArtists()
       .then(artists => {
@@ -72,7 +73,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
+      <div className="mb-5">
         <Jumbotron>
           <Container className="text-center bg-transparent">
             <h1 className="display-3">Playlist Creator</h1>
@@ -127,27 +128,29 @@ class Home extends Component {
             </Row>
           </Container>
         </Jumbotron>
-        <Container>
-          <h4 className="text-muted">Recommended artists for you</h4>
-          <Row>
-            {this.state.userRecommendedArtists.map((item, index) => (
-              <Col sm="6" md="4" lg="3" key={index}>
-                <Card className="mt-4 shadow-sm border-0 rounded-0">
-                  <Link to={`/create/${item.id}/${window.location.hash}`}>
-                    <CardImg
-                      className="rounded-0"
-                      top
-                      width=""
-                      src={item.image}
-                      alt=""
-                    />
-                  </Link>
-                  <CardBody>{item.name}</CardBody>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        {!this.state.loggedIn && (
+          <Container>
+            <h4 className="text-muted">Recommended artists for you</h4>
+            <Row>
+              {this.state.userRecommendedArtists.map((item, index) => (
+                <Col sm="6" md="4" lg="3" key={index}>
+                  <Card className="mt-4 shadow-sm border-0 rounded-0">
+                    <Link to={`/create/${item.id}/${window.location.hash}`}>
+                      <CardImg
+                        className="rounded-0"
+                        top
+                        width=""
+                        src={item.image}
+                        alt=""
+                      />
+                    </Link>
+                    <CardBody>{item.name}</CardBody>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        )}
       </div>
     );
   }

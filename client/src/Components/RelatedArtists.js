@@ -33,6 +33,8 @@ class RelatedArtists extends Component {
   }
 
   componentDidMount() {
+    // get artist with the id that was passed in props
+    // need this to display the artist the user selected on new page with related artists
     spotifyApi
       .getArtist(this.state.searchedArtistId)
       .then(artist => {
@@ -71,7 +73,7 @@ class RelatedArtists extends Component {
     for (const artist of this.state.artists) {
       spotifyApi
         .getArtistTopTracks(artist.id, "US")
-        .then(response => {         
+        .then(response => {
           this.setState({
             gotTopTracks: true,
             topTracks: this.state.topTracks.concat(response.tracks)
@@ -83,37 +85,7 @@ class RelatedArtists extends Component {
     }
   };
 
-  getRelatedArtists = (id, name) => {
-    this.setState({
-      artists: [],
-      playlistArtists: this.state.playlistArtists.concat([
-        { id: id, name: name }
-      ])
-    });
-    spotifyApi
-      .getArtistRelatedArtists(id)
-      .then(response => {
-        for (const artist of response.artists) {
-          if (this.state.playlistArtists.length === 10) {
-            break;
-          } else {
-            this.setState({
-              artists: this.state.artists.concat([
-                {
-                  id: artist.id,
-                  name: artist.name,
-                  image: artist.images[0].url
-                }
-              ])
-            });
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
+  // returns array with elements in random order
   shuffle = array => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -122,9 +94,9 @@ class RelatedArtists extends Component {
     return array;
   };
 
-  getTracks = () => {
+  //gets track uris for each track, uris are needed to add tracks to the playlist
+  getTrackUris = () => {
     const shuffledTracks = this.shuffle(this.state.topTracks);
-    // const shuffledPosts = this.state.artistsTopTracks;
     const uris = [];
     for (const track of shuffledTracks) {
       uris.push(track.uri);
@@ -133,15 +105,6 @@ class RelatedArtists extends Component {
       });
     }
   };
-
-  async getTracksAndCreatePlaylist() {
-    try {
-      await this.getTracks();
-      this.createPlaylist();
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   createPlaylist = () => {
     spotifyApi
@@ -174,19 +137,27 @@ class RelatedArtists extends Component {
       });
   };
 
-  removeArtist = id => {
-    this.setState(currentState => {
-      return {
-        playlistArtists: currentState.playlistArtists.filter(
-          artist => artist.id !== id
-        )
-      };
-    });
-  };
+  // gets track uris first and then creates the playlist
+  async getUrisAndCreatePlaylist() {
+    try {
+      await this.getTracks();
+      this.createPlaylist();
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   updateTitle = e => {
     this.setState({
       playlistName: e.target.value
+    });
+  };
+
+  removeArtist = id => {
+    this.setState(currentState => {
+      return {
+        artists: currentState.artists.filter(artist => artist.id !== id)
+      };
     });
   };
 
@@ -237,9 +208,7 @@ class RelatedArtists extends Component {
                           {this.state.playlistName && (
                             <Button
                               className="btn badge-pill btn-success btn-lg mt-3"
-                              onClick={this.getTracksAndCreatePlaylist.bind(
-                                this
-                              )}
+                              onClick={this.getUrisAndCreatePlaylist.bind(this)}
                             >
                               <span id="go" className="p-4 text-uppercase">
                                 Create Playlist
