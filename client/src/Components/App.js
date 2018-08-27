@@ -23,13 +23,11 @@ var spotifyApi = new SpotifyWebApi();
 class App extends Component {
   constructor(props) {
     super(props);
-    const params = this.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
+    // if (token) {
+    //   spotifyApi.setAccessToken(token);
+    // }
     this.state = {
-      loggedIn: token ? true : false,
+      loggedIn: false,
       userId: "",
       displayName: "",
       isOpen: false
@@ -38,17 +36,43 @@ class App extends Component {
 
   componentDidMount() {
     // get user info
-    spotifyApi
-      .getMe()
-      .then(response => {
+    const params = this.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      this.setState({
+        loggedIn: token ? true : false
+      });
+    }
+    axios
+      .get("https://api.spotify.com/v1/me", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(user => {
+        console.log(user);
         this.setState({
-          userId: response.id,
-          displayName: response.display_name
+          userId: user.data.id,
+          displayName: user.data.display_name
         });
       })
       .catch(error => {
-        console.log(error);
+        this.setState({
+          loggedIn: false
+        });
       });
+
+    // spotifyApi
+    //   .getMe()
+    //   .then(response => {
+    //     this.setState({
+    //       userId: response.id,
+    //       displayName: response.display_name
+    //     });
+    //   })
+    //   .catch(error => {
+    //     this.setState({
+    //       loggedIn: false
+    //     });
+    //   });
   }
 
   toggle = () => {
@@ -114,21 +138,9 @@ class App extends Component {
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
-                  <NavItem>
-                    {this.state.loggedIn === false && (
-                      <a
-                        className="btn badge-pill btn-success btn-lg"
-                        href="http://localhost:8888/login"
-                      >
-                        <span id="go" className="p-4 text-uppercase">
-                          Login with Spotify
-                        </span>
-                      </a>
-                    )}
-                  </NavItem>
                   {this.state.loggedIn && (
                     <NavItem>
-                      <NavLink>Logged in as {this.state.displayName}</NavLink>
+                      <NavLink>{this.state.displayName}</NavLink>
                     </NavItem>
                   )}
                 </Nav>
@@ -136,20 +148,20 @@ class App extends Component {
             </Container>
           </Navbar>
 
-          {/* {this.state.loggedIn && (
-              <h1 className="text-center mt-3">
-                Welcome {this.state.displayName}
-              </h1>
-            )} */}
-
-          <Route exact path="/" component={Home} />
+          <Route
+            exact
+            path={`/`}
+            render={() => {
+              return <Home getHashParams={() => this.getHashParams()} />;
+            }}
+          />
           <Route
             path={`/billboard`}
             render={() => {
               return (
                 <Billboard
-                  loggedIn={this.state.loggedIn}
                   userId={this.state.userId}
+                  getHashParams={() => this.getHashParams()}
                 />
               );
             }}
@@ -159,9 +171,9 @@ class App extends Component {
             render={({ match }) => {
               return (
                 <Artist
-                  loggedIn={this.state.loggedIn}
                   userId={this.state.userId}
                   params={match.params}
+                  getHashParams={() => this.getHashParams()}
                 />
               );
             }}
@@ -171,9 +183,9 @@ class App extends Component {
             render={({ match }) => {
               return (
                 <RelatedArtists
-                  loggedIn={this.state.loggedIn}
                   userId={this.state.userId}
                   params={match.params}
+                  getHashParams={() => this.getHashParams()}
                 />
               );
             }}

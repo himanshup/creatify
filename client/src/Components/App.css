@@ -1,5 +1,5 @@
 #go {
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 
 .card {
@@ -18,7 +18,7 @@
 }
 
 .jumbotron {
-  background: #f8f8f8 !important;
+  background: #f4f4f4 !important;
   min-height: 500px;
 }
 
@@ -80,8 +80,8 @@ input[type="color"]:focus,
 .btn-success.disabled,
 .btn-success:disabled {
   color: #fff;
-  background-color: #28a745;
-  border-color: #28a745;
+  background-color: #1d963a;
+  border-color: #1d963a;
 }
 
 .btn-success:not(:disabled):not(.disabled):active,
