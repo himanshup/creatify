@@ -13,9 +13,8 @@ import {
 import axios from "axios";
 import Home from "./Home";
 import Billboard from "./Billboard";
-import Artist from "./Artist";
+import Artist from "./SearchArtist";
 import RelatedArtists from "./RelatedArtists";
-// import logo from "./spotifylogo.png";
 import SpotifyWebApi from "spotify-web-api-js";
 
 var spotifyApi = new SpotifyWebApi();
@@ -53,7 +52,8 @@ class App extends Component {
       })
       .catch(error => {
         this.setState({
-          loggedIn: false
+          loggedIn: false,
+          loading: false
         });
       });
   };
@@ -105,7 +105,6 @@ class App extends Component {
           <Navbar dark expand="md">
             <Container>
               <Link className="navbar-brand" to={`/${window.location.hash}`}>
-                {/* <img src={logo} alt="" width="170" /> */}
                 Playlist Creator
               </Link>
               <NavbarToggler onClick={this.toggle} />
@@ -116,14 +115,7 @@ class App extends Component {
                       <NavLink>{this.state.displayName}</NavLink>
                     </NavItem>
                   ) : (
-                    <a
-                      className="btn badge-pill btn-success btn-lg"
-                      href="http://localhost:8888/login"
-                    >
-                      <span id="go" className="p-4 text-uppercase">
-                        Login With Spotify
-                      </span>
-                    </a>
+                    <NavLink href="http://localhost:8888/login">Login</NavLink>
                   )}
                 </Nav>
               </Collapse>
@@ -134,21 +126,13 @@ class App extends Component {
             exact
             path={`/`}
             render={() => {
-              return (
-                <Home
-                  getHashParams={() => this.getHashParams()}
-                />
-              );
+              return <Home getHashParams={() => this.getHashParams()} />;
             }}
           />
           <Route
             path={`/billboard`}
             render={() => {
-              return (
-                <Billboard
-                  getHashParams={() => this.getHashParams()}
-                />
-              );
+              return <Billboard getHashParams={() => this.getHashParams()} />;
             }}
           />
           <Route

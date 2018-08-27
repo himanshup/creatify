@@ -2,6 +2,11 @@
   letter-spacing: 2px;
 }
 
+.close:focus,
+.close.focus {
+  box-shadow: none !important;
+}
+
 .card {
   -webkit-transition: box-shadow 0.3s ease-in-out;
   -moz-transition: box-shadow 0.3s ease-in-out;
@@ -15,6 +20,18 @@
   -moz-transition: box-shadow 0.3s ease-in-out;
   -o-transition: box-shadow 0.3s ease-in-out;
   transition: box-shadow 0.3s ease-in-out;
+}
+
+.footerLinks {
+  color: #1db954;
+  text-decoration: none;
+  transition: 0.1s ease !important;
+}
+
+.footerLinks:hover {
+  color: #1ed760;
+  text-decoration: none;
+  transition: 0.1s ease !important;
 }
 
 .jumbotron {

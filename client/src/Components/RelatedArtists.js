@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "./Loading";
+import Footer from "./Footer";
 var spotifyApi = new SpotifyWebApi();
 
 class RelatedArtists extends Component {
@@ -62,9 +63,12 @@ class RelatedArtists extends Component {
         });
       })
       .catch(error => {
-        this.setState({
-          loggedIn: false
-        });
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -115,7 +119,12 @@ class RelatedArtists extends Component {
         });
       })
       .catch(error => {
-        console.log(error);
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -141,7 +150,12 @@ class RelatedArtists extends Component {
         loading: false
       });
     } catch (error) {
-      console.log(error);
+      if (error) {
+        this.setState({
+          loggedIn: false,
+          loading: false
+        });
+      }
     }
   }
 
@@ -194,7 +208,12 @@ class RelatedArtists extends Component {
         });
       })
       .catch(error => {
-        console.log(error);
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -227,136 +246,150 @@ class RelatedArtists extends Component {
 
   render() {
     return (
-      <Container className="mb-5">
+      <Container>
         {this.state.loading === true ? (
           <Loading />
         ) : (
           <div>
-            {this.state.artistFound ? (
+            {this.state.loggedIn ? (
               <div>
-                {!this.state.createdPlaylist && (
+                {this.state.artistFound ? (
                   <div>
-                    <div className="text-center">
-                      {!this.state.gotTopTracks && (
-                        <div>
-                          <h1 className="mt-3">Related Artists</h1>
-                          <p>
-                            Press <strong>Get Top Tracks</strong> to get a list
-                            of top tracks from these artists.
-                          </p>
-                          <Button
-                            className="btn badge-pill btn-success btn-lg"
-                            onClick={this.getTopTracks.bind(this)}
-                          >
-                            <span id="go" className="p-4 text-uppercase">
-                              Get Top Tracks
-                            </span>
-                          </Button>
-                        </div>
-                      )}
-                      {this.state.gotTopTracks && (
-                        <div>
-                          <h1 className="mt-3">Top Tracks</h1>
-                          <p>
-                            These are the top tracks for each artist. To save
-                            the playlist on Spotify, enter a playlist name and
-                            press <strong>Create Playlist</strong>.
-                          </p>
-                          <Row>
-                            <Col />
-                            <Col sm="6" lg="5" className="text-center">
-                              <Input
-                                type="text"
-                                placeholder="Playlist Name"
-                                className="rounded-0"
-                                value={this.state.playlistName}
-                                onChange={this.updatePlaylistName}
-                              />
+                    {!this.state.createdPlaylist && (
+                      <div>
+                        <div className="text-center">
+                          {!this.state.gotTopTracks && (
+                            <div>
+                              <h1 className="mt-3">Related Artists</h1>
+                              <p>
+                                Press <strong>Get Top Tracks</strong> to get a
+                                list of top tracks from these artists.
+                              </p>
+                              <Button
+                                className="btn badge-pill btn-success btn-lg"
+                                onClick={this.getTopTracks.bind(this)}
+                              >
+                                <span id="go" className="p-4 text-uppercase">
+                                  Get Top Tracks
+                                </span>
+                              </Button>
+                            </div>
+                          )}
+                          {this.state.gotTopTracks && (
+                            <div>
+                              <h1 className="mt-3">Top Tracks</h1>
+                              <p>
+                                These are the top tracks for each artist. To
+                                save the playlist on Spotify, enter a playlist
+                                name and press <strong>Create Playlist</strong>.
+                              </p>
+                              <Row>
+                                <Col />
+                                <Col sm="6" lg="5" className="text-center">
+                                  <Input
+                                    type="text"
+                                    placeholder="Playlist Name"
+                                    className="rounded-0"
+                                    value={this.state.playlistName}
+                                    onChange={this.updatePlaylistName}
+                                  />
 
-                              {this.state.playlistName && (
-                                <Button
-                                  className="btn badge-pill btn-success btn-lg mt-3"
-                                  onClick={this.getUrisAndCreatePlaylist.bind(
-                                    this
+                                  {this.state.playlistName && (
+                                    <Button
+                                      className="btn badge-pill btn-success btn-lg mt-3"
+                                      onClick={this.getUrisAndCreatePlaylist.bind(
+                                        this
+                                      )}
+                                    >
+                                      <span
+                                        id="go"
+                                        className="p-4 text-uppercase"
+                                      >
+                                        Create Playlist
+                                      </span>
+                                    </Button>
                                   )}
-                                >
-                                  <span id="go" className="p-4 text-uppercase">
-                                    Create Playlist
-                                  </span>
-                                </Button>
-                              )}
-                            </Col>
-                            <Col />
-                          </Row>
+                                </Col>
+                                <Col />
+                              </Row>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
 
-                    {!this.state.gotTopTracks && (
-                      <Row className="mt-3">
-                        {this.state.artists.map((item, index) => (
-                          <Col sm="6" md="4" lg="3" key={index}>
-                            <Card className="mt-4 shadow-sm border-0 rounded-0">
-                              <CardImg
-                                className="rounded-0"
-                                top
-                                width=""
-                                src={
-                                  item.image
-                                    ? item.image
-                                    : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
-                                }
-                                alt=""
-                              />
-                              <CardBody>{item.name}</CardBody>
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-                    )}
-
-                    {this.state.gotTopTracks && (
-                      <Table className="mt-4" bordered striped>
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Title</th>
-                            <th>Artist</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {this.state.topTracks &&
-                            this.state.topTracks.map((item, index) => (
-                              <tr key={index}>
-                                <th scope="row">{index}</th>
-                                <td>{item.name}</td>
-                                <td>{item.artists[0].name}</td>
-                              </tr>
+                        {!this.state.gotTopTracks && (
+                          <Row className="mt-3">
+                            {this.state.artists.map((item, index) => (
+                              <Col sm="6" md="4" lg="3" key={index}>
+                                <Card className="mt-4 shadow-sm border-0 rounded-0">
+                                  <CardImg
+                                    className="rounded-0"
+                                    top
+                                    width=""
+                                    src={
+                                      item.image
+                                        ? item.image
+                                        : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                                    }
+                                    alt=""
+                                  />
+                                  <CardBody>{item.name}</CardBody>
+                                </Card>
+                              </Col>
                             ))}
-                        </tbody>
-                      </Table>
+                          </Row>
+                        )}
+
+                        {this.state.gotTopTracks && (
+                          <Table className="mt-4" bordered striped>
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Artist</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {this.state.topTracks &&
+                                this.state.topTracks.map((item, index) => (
+                                  <tr key={index}>
+                                    <th scope="row">{index}</th>
+                                    <td>{item.name}</td>
+                                    <td>{item.artists[0].name}</td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </Table>
+                        )}
+                      </div>
+                    )}
+
+                    {this.state.createdPlaylist && (
+                      <div className="text-center">
+                        <h1 className="mt-3">Playlist Created</h1>
+                        <p>Click the button to view it on Spotify.</p>
+                        <Button
+                          className="btn badge-pill btn-success btn-lg"
+                          href={this.state.playlist.external_urls.spotify}
+                        >
+                          <span id="go" className="p-4 text-uppercase">
+                            View Playlist
+                          </span>
+                        </Button>
+                      </div>
                     )}
                   </div>
-                )}
-
-                {this.state.createdPlaylist && (
-                  <div className="text-center">
-                    <h1 className="mt-3">Playlist Created</h1>
-                    <p>Click the button to view it on Spotify.</p>
-                    <Button
-                      className="btn badge-pill btn-success btn-lg"
-                      href={this.state.playlist.external_urls.spotify}
-                    >
-                      <span id="go" className="p-4 text-uppercase">
-                        View Playlist
-                      </span>
-                    </Button>
-                  </div>
+                ) : (
+                  <h1 className="text-center mt-3">
+                    Couldn't find that Artist
+                  </h1>
                 )}
               </div>
             ) : (
-              <h1 className="text-center mt-3">Couldn't find that Artist</h1>
+              <h1 className="text-center mt-3">
+                You must be logged in to do that.
+              </h1>
             )}
+            <Footer />
           </div>
         )}
       </Container>

@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "./Loading";
+import Footer from "./Footer";
 var spotifyApi = new SpotifyWebApi();
 
 class Home extends Component {
@@ -35,18 +36,35 @@ class Home extends Component {
       .getMyTopArtists()
       .then(artists => {
         for (const artist of artists.items) {
-          if (this.state.userRecommendedArtists.length === 10) {
+          if (this.state.userRecommendedArtists.length === 8) {
             break;
           } else {
-            this.setState({
-              userRecommendedArtists: this.state.userRecommendedArtists.concat([
-                {
-                  id: artist.id,
-                  name: artist.name,
-                  image: artist.images[0].url
-                }
-              ])
-            });
+            if (artist.images.length < 1) {
+              this.setState({
+                userRecommendedArtists: this.state.userRecommendedArtists.concat(
+                  [
+                    {
+                      id: artist.id,
+                      name: artist.name,
+                      image:
+                        "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                    }
+                  ]
+                )
+              });
+            } else {
+              this.setState({
+                userRecommendedArtists: this.state.userRecommendedArtists.concat(
+                  [
+                    {
+                      id: artist.id,
+                      name: artist.name,
+                      image: artist.images[0].url
+                    }
+                  ]
+                )
+              });
+            }
           }
         }
       })
@@ -56,9 +74,12 @@ class Home extends Component {
         });
       })
       .catch(error => {
-        this.setState({
-          loggedIn: false
-        });
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -84,9 +105,12 @@ class Home extends Component {
         });
       })
       .catch(error => {
-        this.setState({
-          loggedIn: false
-        });
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -102,7 +126,12 @@ class Home extends Component {
         });
       })
       .catch(error => {
-        console.log(error);
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -114,19 +143,48 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="mb-5">
-        <Jumbotron>
+      <div>
+        <Jumbotron className="rounded-0">
           <Container className="text-center bg-transparent">
-            <h1 className="display-3">Playlist Creator</h1>
+            <h1 className="display-3">The Playlist Creator</h1>
+            <p className="lead mt-3 infotxt">
+              Easily create Spotify playlists.
+            </p>
+            {/* <p className="lead">
+              Playlist Creator can create a Spotify playlist with songs from Billboard's
+              Top 100 or based on an artist. To see a list of the top 100 songs,
+              click{" "}
+              <Link
+                className="text-success"
+                to={`/billboard/${window.location.hash}`}
+              >
+                here
+              </Link>
+              . To create a playlist based on an artist, simply search for one
+              and you will be shown a list of related artists plus top tracks
+              for each artist.
+            </p>
+
+            <p className="lead">
+              To get started, login with your Spotify account.
+            </p>
+            <a
+              className="btn badge-pill btn-success btn-lg mt-1"
+              href="http://localhost:8888/login"
+            >
+              <span id="go" className="p-4 text-uppercase">
+                Login With Spotify
+              </span>
+            </a> */}
             <Row>
               <Col>
-                <p className="lead mt-3 infotxt">
-                  Create a playlist with songs from Billboard's Top 100. Click
-                  the button to see a list of the songs. You can remove any you
-                  don't like.
+                <p className="lead mt-2 infotxt">
+                  Create a Spotify playlist with songs from Billboard's Top 100.
+                  Click the button to see a list of the songs. You can remove
+                  any you don't like.
                 </p>
                 <Link
-                  className="btn badge-pill btn-success btn-lg"
+                  className="btn badge-pill btn-success btn-lg mb-3"
                   to={`/billboard/${window.location.hash}`}
                 >
                   <span id="go" className="p-4 text-uppercase">
@@ -135,12 +193,14 @@ class Home extends Component {
                 </Link>
               </Col>
               <Col>
-                <p className="lead mt-3 infotxt">
-                  Create a playlist based on an artist. Simply search for an
-                  artist and it will get a list of related artists plus top
-                  tracks for each artist.{" "}
+                <p className="lead mt-2 infotxt">
+                  Create a Spotify playlist based on an artist. Simply search
+                  for an artist and you will be shown a list of related artists
+                  plus top tracks for each artist.{" "}
                   {!this.state.loggedIn && (
-                    <span>To search for an artist, login with Spotify.</span>
+                    <span>
+                      To get started, login with your Spotify account.
+                    </span>
                   )}
                 </p>
                 {this.state.loggedIn && (
@@ -176,16 +236,6 @@ class Home extends Component {
                 )}
               </Col>
             </Row>
-            {/* {!this.state.loggedIn && (
-              <a
-                className="btn badge-pill btn-success btn-lg mt-5"
-                href="http://localhost:8888/login"
-              >
-                <span id="go" className="p-4 text-uppercase">
-                  Login With Spotify
-                </span>
-              </a>
-            )} */}
           </Container>
         </Jumbotron>
 
@@ -218,6 +268,7 @@ class Home extends Component {
             )}
           </Container>
         )}
+        <Footer />
       </div>
     );
   }

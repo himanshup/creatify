@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Container, Button, Table } from "reactstrap";
-import { FaTimes } from "react-icons/fa";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 import Loading from "./Loading";
+import Footer from "./Footer";
 var spotifyApi = new SpotifyWebApi();
 
 class Billboard extends Component {
@@ -49,9 +49,12 @@ class Billboard extends Component {
         });
       })
       .catch(error => {
-        this.setState({
-          loggedIn: false
-        });
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
       });
   };
 
@@ -68,10 +71,11 @@ class Billboard extends Component {
         })
       )
       .catch(error => {
-        const token = spotifyApi.getAccessToken();
-        if (token) {
-          console.log(token);
-          spotifyApi.setAccessToken(token);
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
         }
       });
   };
@@ -92,18 +96,33 @@ class Billboard extends Component {
     try {
       await this.getTrackUris();
       this.createPlaylist();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      if (error) {
+        this.setState({
+          loggedIn: false,
+          loading: false
+        });
+      }
     }
   }
 
   getTrackUris = () => {
     for (const track of this.state.songs) {
-      spotifyApi.searchTracks(`${track.title}`, { limit: 1 }).then(response => {
-        this.setState({
-          uris: this.state.uris.concat([response.tracks.items[0].uri])
+      spotifyApi
+        .searchTracks(`${track.title}`, { limit: 1 })
+        .then(response => {
+          this.setState({
+            uris: this.state.uris.concat([response.tracks.items[0].uri])
+          });
+        })
+        .catch(error => {
+          if (error) {
+            this.setState({
+              loggedIn: false,
+              loading: false
+            });
+          }
         });
-      });
     }
   };
 
@@ -138,7 +157,10 @@ class Billboard extends Component {
       })
       .catch(error => {
         if (error) {
-          this.getRefreshToken();
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
         }
       });
   };
@@ -160,89 +182,101 @@ class Billboard extends Component {
 
   render() {
     return (
-      <Container className="mb-5">
+      <Container>
         {this.state.loading === true ? (
           <Loading />
         ) : (
           <div>
-            {!this.state.billboardPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">The Billboard Hot 100</h1>
-                <p className="">
-                  These are the songs from the Billboard Hot 100.{" "}
-                  {this.state.loggedIn ? (
-                    <span>
-                      Click the button to create a playlist and save it on
-                      Spotify.
-                    </span>
-                  ) : (
-                    <span>
-                      To create a playlist, login with your spotify account
-                    </span>
-                  )}
-                </p>
-                {this.state.loggedIn ? (
-                  <Button
-                    className="btn badge-pill btn-success btn-lg"
-                    onClick={this.getUrisAndCreatePlaylist.bind(this)}
-                  >
-                    <span id="go" className="p-4 text-uppercase">
-                      Create Playlist
-                    </span>
-                  </Button>
-                ) : (
-                  <a
-                    className="btn badge-pill btn-success btn-lg"
-                    href="http://localhost:8888/login"
-                  >
-                    <span id="go" className="p-4 text-uppercase">
-                      Login With Spotify
-                    </span>
-                  </a>
+            {this.state.loggedIn ? (
+              <div>
+                {!this.state.billboardPlaylistCreated && (
+                  <div className="text-center">
+                    <h1 className="mt-3">The Billboard Hot 100</h1>
+                    <p className="">
+                      These are the songs from the Billboard Hot 100.{" "}
+                      {this.state.loggedIn ? (
+                        <span>
+                          Click the button to create a playlist and save it on
+                          Spotify.
+                        </span>
+                      ) : (
+                        <span>
+                          To create a playlist, you must be logged in.
+                        </span>
+                      )}
+                    </p>
+                    {this.state.loggedIn ? (
+                      <Button
+                        className="btn badge-pill btn-success btn-lg"
+                        onClick={this.getUrisAndCreatePlaylist.bind(this)}
+                      >
+                        <span id="go" className="p-4 text-uppercase">
+                          Create Playlist
+                        </span>
+                      </Button>
+                    ) : (
+                      <a
+                        className="btn badge-pill btn-success btn-lg"
+                        href="http://localhost:8888/login"
+                      >
+                        <span id="go" className="p-4 text-uppercase">
+                          Login With Spotify
+                        </span>
+                      </a>
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
 
-            {this.state.billboardPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">Playlist Created</h1>
-                <p>Click the button to view it on Spotify.</p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg"
-                  href={this.state.billboardPlaylist.external_urls.spotify}
-                >
-                  <span id="go" className="p-4 text-uppercase">
-                    View Playlist
-                  </span>
-                </Button>
-              </div>
-            )}
-            {!this.state.billboardPlaylistCreated && (
-              <Table className="mt-3" bordered striped>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Artist</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!this.state.billboardPlaylistCreated &&
-                    this.state.songs.map((item, index) => (
-                      <tr key={index}>
-                        <th scope="row">{item.rank}</th>
-                        <td>{item.title}</td>
-                        <td>
-                          {item.artist}
-                          <FaTimes
-                            className="float-right"
-                            onClick={() => this.removeTrack(item.title)}
-                          />
-                        </td>
+                {this.state.billboardPlaylistCreated && (
+                  <div className="text-center">
+                    <h1 className="mt-3">Playlist Created</h1>
+                    <p>Click the button to view it on Spotify.</p>
+                    <Button
+                      className="btn badge-pill btn-success btn-lg"
+                      href={this.state.billboardPlaylist.external_urls.spotify}
+                    >
+                      <span id="go" className="p-4 text-uppercase">
+                        View Playlist
+                      </span>
+                    </Button>
+                  </div>
+                )}
+                {!this.state.billboardPlaylistCreated && (
+                  <Table className="mt-3" bordered striped>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Artist</th>
                       </tr>
-                    ))}
-                </tbody>
-              </Table>
+                    </thead>
+                    <tbody>
+                      {!this.state.billboardPlaylistCreated &&
+                        this.state.songs.map((item, index) => (
+                          <tr key={index}>
+                            <th scope="row">{item.rank}</th>
+                            <td>{item.title}</td>
+                            <td>
+                              {item.artist}
+                              <button
+                                type="button"
+                                className="btn close float-right"
+                                onClick={() => this.removeTrack(item.title)}
+                              >
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </Table>
+                )}
+                <Footer />
+              </div>
+            ) : (
+              <h1 className="text-center mt-3">
+                You must be logged in to do that.
+              </h1>
             )}
           </div>
         )}
