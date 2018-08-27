@@ -12,21 +12,14 @@ import {
 } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "./Loading";
-import axios from "axios";
 var spotifyApi = new SpotifyWebApi();
 
 class RelatedArtists extends Component {
   constructor(props) {
     super(props);
-    const params = this.props.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
     this.state = {
       loading: true,
-      loggedIn: props.loggedIn,
-      token: token,
+      loggedIn: false,
       userId: "",
       searchedArtistId: props.params.artistId,
       artistFound: false,
@@ -42,14 +35,30 @@ class RelatedArtists extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    axios
-      .get("https://api.spotify.com/v1/me", {
-        headers: { Authorization: `Bearer ${this.state.token}` }
-      })
+    this.setAccessToken();
+  }
+
+  setAccessToken = () => {
+    const params = this.props.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+      this.setState({
+        loggedIn: token ? true : false
+      });
+      this.getUserInfo();
+      // get artist with the id that was passed in props
+      // need this to display the artist the user selected on new page with related artists
+      this.getRelatedArtists();
+    }
+  };
+
+  getUserInfo = () => {
+    spotifyApi
+      .getMe()
       .then(response => {
         this.setState({
-          userId: response.data.id
+          userId: response.id
         });
       })
       .catch(error => {
@@ -57,8 +66,9 @@ class RelatedArtists extends Component {
           loggedIn: false
         });
       });
-    // get artist with the id that was passed in props
-    // need this to display the artist the user selected on new page with related artists
+  };
+
+  getRelatedArtists = () => {
     spotifyApi
       .getArtist(this.state.searchedArtistId)
       .then(artist => {
@@ -76,15 +86,26 @@ class RelatedArtists extends Component {
         for (const artist of relatedArtists.artists) {
           if (this.state.artists.length === 10) {
           } else {
-            this.setState({
-              artists: this.state.artists.concat([
-                {
-                  id: artist.id,
-                  name: artist.name,
-                  image: artist.images[0].url
-                }
-              ])
-            });
+            if (artist.images.length < 1) {
+              this.setState({
+                artists: this.state.artists.concat([
+                  {
+                    id: artist.id,
+                    name: artist.name
+                  }
+                ])
+              });
+            } else {
+              this.setState({
+                artists: this.state.artists.concat([
+                  {
+                    id: artist.id,
+                    name: artist.name,
+                    image: artist.images[0].url
+                  }
+                ])
+              });
+            }
           }
         }
       })
@@ -94,9 +115,9 @@ class RelatedArtists extends Component {
         });
       })
       .catch(error => {
-        console.log("error");
+        console.log(error);
       });
-  }
+  };
 
   async getTopTracks() {
     this.setState({
@@ -124,7 +145,7 @@ class RelatedArtists extends Component {
     }
   }
 
-  // returns array with elements in random order
+  // returns the track array with tracks in random order
   shuffle = array => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -280,7 +301,11 @@ class RelatedArtists extends Component {
                                 className="rounded-0"
                                 top
                                 width=""
-                                src={item.image}
+                                src={
+                                  item.image
+                                    ? item.image
+                                    : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                                }
                                 alt=""
                               />
                               <CardBody>{item.name}</CardBody>

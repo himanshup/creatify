@@ -8,7 +8,7 @@ const override = css`
   border-color: red;
 `;
 
-class Loader extends Component {
+class Loading extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,4 +30,4 @@ class Loader extends Component {
   }
 }
 
-export default Loader;
+export default Loading;

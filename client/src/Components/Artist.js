@@ -12,22 +12,15 @@ import {
   Input
 } from "reactstrap";
 import Loading from "./Loading";
-import axios from "axios";
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
   constructor(props) {
     super(props);
-    const params = this.props.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
     this.state = {
       loading: true,
-      loggedIn: token ? true : false,
-      token: token,
-      userId: props.userId,
+      loggedIn: false,
+      userId: "",
       artist: props.params.artist,
       searchItem: props.params.artist,
       artists: []
@@ -35,85 +28,56 @@ class Artist extends Component {
   }
 
   componentDidMount() {
-    // gets search results on mount
-    axios
-      .get(
-        `https://api.spotify.com/v1/search?q=${
-          this.state.artist
-        }&type=artist&limit=5`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.state.token}`
-          }
-        }
-      )
-      .then(results => {
+    this.setAccessToken();
+  }
+
+  setAccessToken = () => {
+    const params = this.props.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+      this.setState({
+        loggedIn: token ? true : false
+      });
+      this.getUserInfo();
+      // gets search results on mount
+      this.searchArtist();
+    }
+  };
+
+  getUserInfo = () => {
+    spotifyApi
+      .getMe()
+      .then(response => {
         this.setState({
-          searchItem: this.state.artist,
-          artist: "",
-          artists: results.data.artists.items,
-          loading: false
+          userId: response.id
         });
       })
       .catch(error => {
-        console.log(error);
+        this.setState({
+          loggedIn: false
+        });
       });
-    // spotifyApi
-    //   .searchArtists(this.state.artist, { limit: 5 })
-    //   .then(response => {
-    //     this.setState({
-    //       artist: "",
-    //       artists: response.artists.items,
-    //       loading: false
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-  }
+  };
 
   searchArtist = () => {
-    // get search results again if user decides to enter something else
+    //search for artist passed in props
     this.setState({
       loading: true
     });
-    axios
-      .get(
-        `https://api.spotify.com/v1/search?q=${
-          this.state.artist
-        }&type=artist&limit=5`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.state.token}`
-          }
-        }
-      )
-      .then(results => {
+    spotifyApi
+      .searchArtists(this.state.artist, { limit: 5 })
+      .then(response => {
         this.setState({
           searchItem: this.state.artist,
           artist: "",
-          artists: results.data.artists.items,
+          artists: response.artists.items,
           loading: false
         });
       })
       .catch(error => {
         console.log(error);
       });
-    // spotifyApi
-    //   .searchArtists(this.state.artist, { limit: 5 })
-    //   .then(response => {
-    //     this.setState({
-    //       searchItem: this.state.artist,
-    //       artist: "",
-    //       artists: response.artists.items,
-    //       loading: false
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
   };
 
   updateArtist = e => {

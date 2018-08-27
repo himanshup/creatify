@@ -23,9 +23,6 @@ var spotifyApi = new SpotifyWebApi();
 class App extends Component {
   constructor(props) {
     super(props);
-    // if (token) {
-    //   spotifyApi.setAccessToken(token);
-    // }
     this.state = {
       loggedIn: false,
       userId: "",
@@ -36,22 +33,22 @@ class App extends Component {
 
   componentDidMount() {
     // get user info
-    const params = this.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      this.setState({
-        loggedIn: token ? true : false
-      });
-    }
-    axios
-      .get("https://api.spotify.com/v1/me", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(user => {
-        console.log(user);
+    this.getAccessToken();
+  }
+
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
+
+  getUserInfo = () => {
+    spotifyApi
+      .getMe()
+      .then(response => {
         this.setState({
-          userId: user.data.id,
-          displayName: user.data.display_name
+          userId: response.id,
+          displayName: response.display_name
         });
       })
       .catch(error => {
@@ -59,26 +56,18 @@ class App extends Component {
           loggedIn: false
         });
       });
+  };
 
-    // spotifyApi
-    //   .getMe()
-    //   .then(response => {
-    //     this.setState({
-    //       userId: response.id,
-    //       displayName: response.display_name
-    //     });
-    //   })
-    //   .catch(error => {
-    //     this.setState({
-    //       loggedIn: false
-    //     });
-    //   });
-  }
-
-  toggle = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+  getAccessToken = () => {
+    const params = this.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+      this.setState({
+        loggedIn: token ? true : false
+      });
+      this.getUserInfo();
+    }
   };
 
   getRefreshToken = () => {
@@ -109,22 +98,6 @@ class App extends Component {
     return hashParams;
   };
 
-  renderLinks = () => {
-    if (this.state.loggedIn === true) {
-      return (
-        <div>
-          <div>
-            <Link to={`/billboard/${window.location.hash}`}>Billboard</Link>
-          </div>
-
-          <div>
-            <Link to={`/artist/${window.location.hash}`}>Artist</Link>
-          </div>
-        </div>
-      );
-    }
-  };
-
   render() {
     return (
       <BrowserRouter>
@@ -138,10 +111,19 @@ class App extends Component {
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
-                  {this.state.loggedIn && (
+                  {this.state.loggedIn ? (
                     <NavItem>
                       <NavLink>{this.state.displayName}</NavLink>
                     </NavItem>
+                  ) : (
+                    <a
+                      className="btn badge-pill btn-success btn-lg"
+                      href="http://localhost:8888/login"
+                    >
+                      <span id="go" className="p-4 text-uppercase">
+                        Login With Spotify
+                      </span>
+                    </a>
                   )}
                 </Nav>
               </Collapse>
@@ -152,7 +134,11 @@ class App extends Component {
             exact
             path={`/`}
             render={() => {
-              return <Home getHashParams={() => this.getHashParams()} />;
+              return (
+                <Home
+                  getHashParams={() => this.getHashParams()}
+                />
+              );
             }}
           />
           <Route
@@ -160,7 +146,6 @@ class App extends Component {
             render={() => {
               return (
                 <Billboard
-                  userId={this.state.userId}
                   getHashParams={() => this.getHashParams()}
                 />
               );
@@ -171,7 +156,6 @@ class App extends Component {
             render={({ match }) => {
               return (
                 <Artist
-                  userId={this.state.userId}
                   params={match.params}
                   getHashParams={() => this.getHashParams()}
                 />
@@ -183,7 +167,6 @@ class App extends Component {
             render={({ match }) => {
               return (
                 <RelatedArtists
-                  userId={this.state.userId}
                   params={match.params}
                   getHashParams={() => this.getHashParams()}
                 />

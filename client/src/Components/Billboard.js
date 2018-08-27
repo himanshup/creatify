@@ -9,15 +9,10 @@ var spotifyApi = new SpotifyWebApi();
 class Billboard extends Component {
   constructor(props) {
     super(props);
-    const params = this.props.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
     this.state = {
       loading: true,
-      loggedIn: token ? true : false,
-      userId: props.userId,
+      loggedIn: false,
+      userId: "",
       songs: [],
       uris: [],
       billboardPlaylistId: "",
@@ -28,7 +23,39 @@ class Billboard extends Component {
   }
 
   componentDidMount() {
+    this.setAccessToken();
     // show list of songs
+    this.getTop100Songs();
+  }
+
+  setAccessToken = () => {
+    const params = this.props.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+      this.setState({
+        loggedIn: token ? true : false
+      });
+      this.getUserInfo();
+    }
+  };
+
+  getUserInfo = () => {
+    spotifyApi
+      .getMe()
+      .then(response => {
+        this.setState({
+          userId: response.id
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loggedIn: false
+        });
+      });
+  };
+
+  getTop100Songs = () => {
     axios
       .all([axios.get("/api/billboard1"), axios.get("/api/billboard100")])
       .then(
@@ -47,7 +74,7 @@ class Billboard extends Component {
           spotifyApi.setAccessToken(token);
         }
       });
-  }
+  };
 
   removeTrack = title => {
     this.setState(currentState => {
@@ -91,7 +118,7 @@ class Billboard extends Component {
           billboardPlaylistId: playlist.id
         });
         return spotifyApi.addTracksToPlaylist(
-          playlist.owner.id,
+          this.state.userId,
           playlist.id,
           this.state.uris
         );
@@ -142,17 +169,37 @@ class Billboard extends Component {
               <div className="text-center">
                 <h1 className="mt-3">The Billboard Hot 100</h1>
                 <p className="">
-                  These are the songs from the Billboard Hot 100. Clicking the
-                  button will create a playlist and save it for you.
+                  These are the songs from the Billboard Hot 100.{" "}
+                  {this.state.loggedIn ? (
+                    <span>
+                      Click the button to create a playlist and save it on
+                      Spotify.
+                    </span>
+                  ) : (
+                    <span>
+                      To create a playlist, login with your spotify account
+                    </span>
+                  )}
                 </p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg"
-                  onClick={this.getUrisAndCreatePlaylist.bind(this)}
-                >
-                  <span id="go" className="p-4 text-uppercase">
-                    Create Playlist
-                  </span>
-                </Button>
+                {this.state.loggedIn ? (
+                  <Button
+                    className="btn badge-pill btn-success btn-lg"
+                    onClick={this.getUrisAndCreatePlaylist.bind(this)}
+                  >
+                    <span id="go" className="p-4 text-uppercase">
+                      Create Playlist
+                    </span>
+                  </Button>
+                ) : (
+                  <a
+                    className="btn badge-pill btn-success btn-lg"
+                    href="http://localhost:8888/login"
+                  >
+                    <span id="go" className="p-4 text-uppercase">
+                      Login With Spotify
+                    </span>
+                  </a>
+                )}
               </div>
             )}
 
