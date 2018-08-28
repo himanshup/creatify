@@ -8,6 +8,7 @@
  */
 require("dotenv").config();
 var express = require("express"); // Express web server framework
+var path = require("path");
 var request = require("request"); // "Request" library
 var cors = require("cors");
 var querystring = require("querystring");
@@ -17,7 +18,7 @@ var x = require("x-ray")();
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
-
+var port = process.env.PORT || 8888;
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -157,6 +158,7 @@ app.get("/refresh_token", function(req, res) {
   });
 });
 
+// API calls
 app.get("/api/billboard1", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
@@ -187,6 +189,13 @@ app.get("/api/billboard100", function(req, res) {
   stream.pipe(res);
 });
 
-app.listen(process.env.PORT || 8888, () => {
-  console.log("Listening on 8888");
-});
+if (process.env.NODE_ENV === "production") {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, "client/build")));
+  // Handle React routing, return all requests to React app
+  app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
