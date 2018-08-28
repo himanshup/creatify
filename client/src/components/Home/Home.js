@@ -151,7 +151,7 @@ class Home extends Component {
             <p className="lead mt-3 infotxt">
               Easily create Spotify playlists.
             </p>
-            <p className="lead">
+            {/* <p className="lead">
               Playlist Creator can create a Spotify playlist with songs from
               Billboard's Top 100 or based on an artist. To see a list of the
               top 100 songs, click{" "}
@@ -180,7 +180,7 @@ class Home extends Component {
               <span id="go" className="p-4 text-uppercase">
                 Login With Spotify
               </span>
-            </a>
+            </a> */}
             <Row>
               <Col>
                 <p className="lead mt-2 infotxt">
