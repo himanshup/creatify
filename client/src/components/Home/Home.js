@@ -189,10 +189,10 @@ class Home extends Component {
                   any you don't like.
                 </p>
                 <Link
-                  className="btn badge-pill btn-success btn-lg mb-3"
+                  className="btn badge-pill btn-success btn-lg mb-3 pr-5 pl-5"
                   to={`/billboard/${window.location.hash}`}
                 >
-                  <span id="go" className="p-4 text-uppercase">
+                  <span id="go" className="text-uppercase">
                     Get top 100 songs
                   </span>
                 </Link>
@@ -227,12 +227,12 @@ class Home extends Component {
                     </Row>
                     {this.state.artist && (
                       <Link
-                        className="btn badge-pill btn-success btn-lg mt-4"
+                        className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
                         to={`/artist/${this.state.artist}/${
                           window.location.hash
                         }`}
                       >
-                        <span id="go" className="p-4 text-uppercase">
+                        <span id="go" className="text-uppercase">
                           Search Artist
                         </span>
                       </Link>

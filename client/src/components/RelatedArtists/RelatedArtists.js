@@ -267,10 +267,10 @@ class RelatedArtists extends Component {
                                 list of top tracks from these artists.
                               </p>
                               <Button
-                                className="btn badge-pill btn-success btn-lg"
+                                className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                                 onClick={this.getTopTracks.bind(this)}
                               >
-                                <span id="go" className="p-4 text-uppercase">
+                                <span id="go" className="text-uppercase">
                                   Get Top Tracks
                                 </span>
                               </Button>
@@ -297,14 +297,14 @@ class RelatedArtists extends Component {
 
                                   {this.state.playlistName && (
                                     <Button
-                                      className="btn badge-pill btn-success btn-lg mt-3"
+                                      className="btn badge-pill btn-success btn-lg mt-3 pr-5 pl-5"
                                       onClick={this.getUrisAndCreatePlaylist.bind(
                                         this
                                       )}
                                     >
                                       <span
                                         id="go"
-                                        className="p-4 text-uppercase"
+                                        className="text-uppercase"
                                       >
                                         Create Playlist
                                       </span>
@@ -369,10 +369,10 @@ class RelatedArtists extends Component {
                         <h1 className="mt-3">Playlist Created</h1>
                         <p>Click the button to view it on Spotify.</p>
                         <Button
-                          className="btn badge-pill btn-success btn-lg"
+                          className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                           href={this.state.playlist.external_urls.spotify}
                         >
-                          <span id="go" className="p-4 text-uppercase">
+                          <span id="go" className="text-uppercase">
                             View Playlist
                           </span>
                         </Button>

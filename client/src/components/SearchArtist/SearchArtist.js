@@ -130,10 +130,10 @@ class Artist extends Component {
                   {this.state.artist && (
                     <div className="text-center">
                       <Button
-                        className="btn badge-pill btn-success btn-lg mt-4"
+                        className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
                         onClick={() => this.searchArtist()}
                       >
-                        <span id="go" className="p-4 text-uppercase">
+                        <span id="go" className="text-uppercase">
                           Search Artist
                         </span>
                       </Button>

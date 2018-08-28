@@ -204,23 +204,23 @@ class Billboard extends Component {
                 </p>
                 {this.state.loggedIn ? (
                   <Button
-                    className="btn badge-pill btn-success btn-lg"
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                     onClick={this.getUrisAndCreatePlaylist.bind(this)}
                   >
-                    <span id="go" className="p-4 text-uppercase">
+                    <span id="go" className="text-uppercase">
                       Create Playlist
                     </span>
                   </Button>
                 ) : (
                   <a
-                    className="btn badge-pill btn-success btn-lg"
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                     href={
                       window.location.href.includes("localhost")
                         ? "http://localhost:8888/login"
                         : "https://playlistcreator-backend.herokuapp.com/login"
                     }
                   >
-                    <span id="go" className="p-4 text-uppercase">
+                    <span id="go" className="text-uppercase">
                       Login With Spotify
                     </span>
                   </a>
@@ -233,10 +233,10 @@ class Billboard extends Component {
                 <h1 className="mt-3">Playlist Created</h1>
                 <p>Click the button to view it on Spotify.</p>
                 <Button
-                  className="btn badge-pill btn-success btn-lg"
+                  className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                   href={this.state.billboardPlaylist.external_urls.spotify}
                 >
-                  <span id="go" className="p-4 text-uppercase">
+                  <span id="go" className="text-uppercase">
                     View Playlist
                   </span>
                 </Button>
