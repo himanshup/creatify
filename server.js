@@ -15,8 +15,8 @@ var x = require("x-ray")();
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri =
-  "http://localhost:8888/callback" ||
-  "https://playlistcreator.herokuapp.com/api/callback"; // Your redirect uri
+  "https://playlistcreator.herokuapp.com/callback" ||
+  "http://localhost:8888/callback"; // Your redirect uri
 var port = process.env.PORT || 8888;
 /**
  * Generates a random string containing numbers and letters
@@ -38,8 +38,6 @@ var stateKey = "spotify_auth_state";
 
 var app = express();
 
-app.use(cors()).use(cookieParser());
-
 if (process.env.NODE_ENV === "production") {
   // Serve any static files
   app.use(express.static(path.join(__dirname, "client/build")));
@@ -49,7 +47,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.get("/api/login", function(req, res) {
+app.use(cors()).use(cookieParser());
+
+app.get("/login", function(req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -68,7 +68,7 @@ app.get("/api/login", function(req, res) {
   );
 });
 
-app.get("/api/callback", function(req, res) {
+app.get("/callback", function(req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
@@ -117,8 +117,10 @@ app.get("/api/callback", function(req, res) {
         });
 
         // we can also pass the token to the browser to make requests from there
+        var uri =
+          "https://playlistcreator.herokuapp.com/" || "http://localhost:3000/";
         res.redirect(
-          "https://playlistcreator.herokuapp.com/#" +
+          uri +
             querystring.stringify({
               access_token: access_token,
               refresh_token: refresh_token
