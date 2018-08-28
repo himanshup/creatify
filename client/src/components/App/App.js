@@ -115,7 +115,7 @@ class App extends Component {
                       <NavLink>{this.state.displayName}</NavLink>
                     </NavItem>
                   ) : (
-                    <NavLink href="https://playlistcreator.herokuapp.com/login">
+                    <NavLink href="https://playlistcreator-backend.herokuapp.com/login">
                       Login
                     </NavLink>
                   )}
