@@ -13,6 +13,7 @@ import {
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import "./RelatedArtists.css"
 var spotifyApi = new SpotifyWebApi();
 
 class RelatedArtists extends Component {

@@ -4,6 +4,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import "./Billboard.css"
 var spotifyApi = new SpotifyWebApi();
 
 class Billboard extends Component {

@@ -13,6 +13,7 @@ import {
 } from "reactstrap";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import "./SearchArtist.css"
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
