@@ -4,7 +4,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
-import "./Billboard.css"
+import "./Billboard.css";
 var spotifyApi = new SpotifyWebApi();
 
 class Billboard extends Component {
@@ -214,7 +214,11 @@ class Billboard extends Component {
                 ) : (
                   <a
                     className="btn badge-pill btn-success btn-lg"
-                    href="http://localhost:8888/login"
+                    href={
+                      window.location.href.includes("localhost")
+                        ? "http://localhost:8888/login"
+                        : "https://playlistcreator-backend.herokuapp.com/login"
+                    }
                   >
                     <span id="go" className="p-4 text-uppercase">
                       Login With Spotify

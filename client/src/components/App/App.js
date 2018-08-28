@@ -115,7 +115,13 @@ class App extends Component {
                       <NavLink>{this.state.displayName}</NavLink>
                     </NavItem>
                   ) : (
-                    <NavLink href="https://playlistcreator-backend.herokuapp.com/login">
+                    <NavLink
+                      href={
+                        window.location.href.includes("localhost")
+                          ? "http://localhost:8888/login"
+                          : "https://playlistcreator-backend.herokuapp.com/login"
+                      }
+                    >
                       Login
                     </NavLink>
                   )}
