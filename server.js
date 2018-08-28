@@ -38,15 +38,6 @@ var stateKey = "spotify_auth_state";
 
 var app = express();
 
-if (process.env.NODE_ENV === "production") {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, "client/build")));
-  // Handle React routing, return all requests to React app
-  app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
-
 app.use(cors()).use(cookieParser());
 
 app.get("/login", function(req, res) {
@@ -195,5 +186,14 @@ app.get("/api/billboard100", function(req, res) {
   ).stream();
   stream.pipe(res);
 });
+
+if (process.env.NODE_ENV === "production") {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, "client/build")));
+  // Handle React routing, return all requests to React app
+  app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
