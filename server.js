@@ -38,10 +38,16 @@ var stateKey = "spotify_auth_state";
 
 var app = express();
 
-app
-  .use(express.static(__dirname + "/public"))
-  .use(cors())
-  .use(cookieParser());
+app.use(cors()).use(cookieParser());
+
+if (process.env.NODE_ENV === "production") {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, "client/build")));
+  // Handle React routing, return all requests to React app
+  app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 
 app.get("/login", function(req, res) {
   var state = generateRandomString(16);
@@ -62,7 +68,7 @@ app.get("/login", function(req, res) {
   );
 });
 
-app.get("https://playlistcreator.herokuapp.com/callback", function(req, res) {
+app.get("/callback", function(req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
@@ -187,14 +193,5 @@ app.get("/api/billboard100", function(req, res) {
   ).stream();
   stream.pipe(res);
 });
-
-if (process.env.NODE_ENV === "production") {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, "client/build")));
-  // Handle React routing, return all requests to React app
-  app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
