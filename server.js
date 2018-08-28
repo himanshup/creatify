@@ -62,7 +62,7 @@ app.get("/login", function(req, res) {
   );
 });
 
-app.get("/callback", function(req, res) {
+app.get("https://playlistcreator.herokuapp.com/callback", function(req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
@@ -112,7 +112,7 @@ app.get("/callback", function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
-          "http://localhost:3000/#" +
+          "https://playlistcreator.herokuapp.com/#" +
             querystring.stringify({
               access_token: access_token,
               refresh_token: refresh_token
