@@ -1,0 +1,4 @@
+.close:focus,
+.close.focus {
+  box-shadow: none !important;
+}

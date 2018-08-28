@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+
 class Footer extends Component {
   render() {
     return (
@@ -14,7 +14,7 @@ class Footer extends Component {
               >
                 Spotify Web API
               </a>
-              . Created by{" "}
+              . Website by{" "}
               <a
                 className="footerLinks"
                 href="https://github.com/himanshup/spotify-playlist-creator"

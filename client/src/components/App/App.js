@@ -11,10 +11,10 @@ import {
   NavLink
 } from "reactstrap";
 import axios from "axios";
-import Home from "./Home";
-import Billboard from "./Billboard";
-import Artist from "./SearchArtist";
-import RelatedArtists from "./RelatedArtists";
+import Home from "../Home/Home";
+import Billboard from "../Billboard/Billboard";
+import Artist from "../SearchArtist/SearchArtist";
+import RelatedArtists from "../RelatedArtists/RelatedArtists";
 import SpotifyWebApi from "spotify-web-api-js";
 
 var spotifyApi = new SpotifyWebApi();

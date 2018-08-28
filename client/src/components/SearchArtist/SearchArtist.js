@@ -11,8 +11,8 @@ import {
   CardBody,
   Input
 } from "reactstrap";
-import Loading from "./Loading";
-import Footer from "./Footer";
+import Loading from "../Loading/Loading";
+import Footer from "../Footer/Footer";
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
