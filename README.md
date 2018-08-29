@@ -6,7 +6,7 @@ View it here View it here https://playlistcreator.herokuapp.com/. You must be si
 
 ## Installation
 
-**Note**: You need a Client ID and Client Secret ID to run this. Replace the CLIENT_ID and CLIENT_SECRET values in `server.js` with your own. To run with `npm` instead, you will have to edit the scripts `package.json`.
+**Note**: You need a Client ID and Client Secret ID to run this. Replace the CLIENT_ID and CLIENT_SECRET values in `server.js` with your own. To run with `npm` instead, you will have to edit the scripts in `package.json`.
 
 ```
 git clone https://github.com/himanshup/spotify-playlist-creator.git
