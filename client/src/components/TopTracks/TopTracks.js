@@ -118,59 +118,67 @@ class TopTracks extends Component {
           <Loading />
         ) : (
           <div>
-            {!this.state.topTracksPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">Your Top Tracks</h1>
-                <p className="">
-                  These are your top 50 tracks. Click the button to create a
-                  playlist with these songs.
-                </p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                  onClick={() => this.createPlaylist()}
-                >
-                  <span id="go" className="text-uppercase">
-                    Create Playlist
-                  </span>
-                </Button>
-              </div>
-            )}
-            {this.state.topTracksPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">Playlist Created</h1>
-                <p>Click the button to view it on Spotify.</p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                  href={this.state.topTracksPlaylist.external_urls.spotify}
-                >
-                  <span id="go" className="text-uppercase">
-                    View Playlist
-                  </span>
-                </Button>
-              </div>
-            )}
-            {!this.state.topTracksPlaylistCreated && (
-              <Table className="mt-3" bordered striped>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Artist</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!this.state.topTracksPlaylistCreated &&
-                    this.state.songs.map((song, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index}</th>
-                        <td>{song.name}</td>
-                        <td>{song.artists[0].name}</td>
+            {this.state.loggedIn ? (
+              <div>
+                {!this.state.topTracksPlaylistCreated && (
+                  <div className="text-center">
+                    <h1 className="mt-3">Top Tracks</h1>
+                    <p className="">
+                      These are your top 50 tracks. Click the button to create a
+                      playlist with these songs.
+                    </p>
+                    <Button
+                      className="btn badge-pill btn-success btn-lg pr-5 pl-5"
+                      onClick={() => this.createPlaylist()}
+                    >
+                      <span id="go" className="text-uppercase">
+                        Create Playlist
+                      </span>
+                    </Button>
+                  </div>
+                )}
+                {this.state.topTracksPlaylistCreated && (
+                  <div className="text-center">
+                    <h1 className="mt-3">Playlist Created</h1>
+                    <p>Click the button to view it on Spotify.</p>
+                    <Button
+                      className="btn badge-pill btn-success btn-lg pr-5 pl-5"
+                      href={this.state.topTracksPlaylist.external_urls.spotify}
+                    >
+                      <span id="go" className="text-uppercase">
+                        View Playlist
+                      </span>
+                    </Button>
+                  </div>
+                )}
+                {!this.state.topTracksPlaylistCreated && (
+                  <Table className="mt-3" bordered striped>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Artist</th>
                       </tr>
-                    ))}
-                </tbody>
-              </Table>
+                    </thead>
+                    <tbody>
+                      {!this.state.topTracksPlaylistCreated &&
+                        this.state.songs.map((song, index) => (
+                          <tr key={index}>
+                            <th scope="row">{index}</th>
+                            <td>{song.name}</td>
+                            <td>{song.artists[0].name}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </Table>
+                )}
+                <Footer />
+              </div>
+            ) : (
+              <h1 className="text-center mt-3">
+                You must be logged in to do that.
+              </h1>
             )}
-            <Footer />
           </div>
         )}
       </Container>

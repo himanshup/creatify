@@ -250,7 +250,7 @@ class TopArtists extends Component {
                     )}
 
                     {this.state.gotTopTracks && (
-                      <Table className="mt-4" bordered striped>
+                      <Table className="mt-3" bordered striped>
                         <thead>
                           <tr>
                             <th>#</th>

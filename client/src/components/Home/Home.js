@@ -148,99 +148,92 @@ class Home extends Component {
         <Jumbotron className="rounded-0">
           <Container className="text-center bg-transparent">
             <h1 className="display-3">The Playlist Creator</h1>
-            <p className="lead mt-3 infotxt">
-              Easily create Spotify playlists.
-            </p>
-            {/* <p className="lead">
-              Playlist Creator can create a Spotify playlist with songs from
-              Billboard's Top 100 or based on an artist. To see a list of the
-              top 100 songs, click{" "}
-              <Link
-                className="text-success"
-                to={`/billboard/${window.location.hash}`}
-              >
-                here
-              </Link>
-              . To create a playlist based on an artist, simply search for one
-              and you will be shown a list of related artists plus top tracks
-              for each artist.
-            </p>
-
-            <p className="lead">
-              To get started, login with your Spotify account.
-            </p>
-            <a
-              className="btn badge-pill btn-success btn-lg mt-1"
-              href={
-                window.location.href.includes("localhost")
-                  ? "http://localhost:8888/login"
-                  : "https://playlistcreator-backend.herokuapp.com/login"
-              }
-            >
-              <span id="go" className="p-4 text-uppercase">
-                Login With Spotify
-              </span>
-            </a> */}
-            <Row>
-              <Col>
-                <p className="lead mt-2 infotxt">
-                  Create a Spotify playlist with songs from Billboard's Top 100.
-                  Click the button to see a list of the songs. You can remove
-                  any you don't like.
-                </p>
-                <Link
-                  className="btn badge-pill btn-success btn-lg mb-3 pr-5 pl-5"
-                  to={`/billboard/${window.location.hash}`}
-                >
-                  <span id="go" className="text-uppercase">
-                    Get top 100 songs
-                  </span>
-                </Link>
-              </Col>
-              <Col>
-                <p className="lead mt-2 infotxt">
-                  Create a Spotify playlist based on an artist. Simply search
-                  for an artist and you will be shown a list of related artists
-                  plus top tracks for each artist.{" "}
-                  {!this.state.loggedIn && (
-                    <span>
-                      To get started, login with your Spotify account.
+            <p className="lead mt-3">Easily create Spotify playlists.</p>
+            {this.state.loggedIn ? (
+              <Row>
+                <Col>
+                  <p className="lead mt-2">
+                    Create a playlist with songs from Billboard's Top 100. Click
+                    the button to see a list of the songs. You can remove any
+                    you don't like.
+                  </p>
+                  <Link
+                    className="btn badge-pill btn-success btn-lg mb-3 pr-5 pl-5"
+                    to={`/billboard/${window.location.hash}`}
+                  >
+                    <span id="go" className="text-uppercase">
+                      Get top 100 songs
                     </span>
+                  </Link>
+                </Col>
+                <Col>
+                  <p className="lead mt-2">
+                    Create a playlist based on an artist. Simply search for an
+                    artist and you will be shown a list of related artists plus
+                    top tracks for each artist.{" "}
+                  </p>
+                  <Row>
+                    <Col />
+                    <Col xs="8" className="text-center">
+                      <Input
+                        type="text"
+                        name="artist"
+                        placeholder="Artist Name"
+                        className="rounded-0"
+                        value={this.state.artist}
+                        onChange={this.updateArtist}
+                        required
+                      />
+                    </Col>
+                    <Col />
+                  </Row>
+                  {this.state.artist && (
+                    <Link
+                      className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
+                      to={`/artist/${this.state.artist}/${
+                        window.location.hash
+                      }`}
+                    >
+                      <span id="go" className="text-uppercase">
+                        Search Artist
+                      </span>
+                    </Link>
                   )}
+                </Col>
+              </Row>
+            ) : (
+              <div>
+                <p className="lead">
+                  Playlist Creator can create a playlist based on an artist or
+                  with songs from Billboard's Top 100. To see a list of the top
+                  100 songs, click{" "}
+                  <Link
+                    className="customLinks"
+                    to={`/billboard/${window.location.hash}`}
+                  >
+                    here
+                  </Link>
+                  . You can also create a playlist with your top tracks or based
+                  on your top artists.
                 </p>
-                {this.state.loggedIn && (
-                  <div>
-                    <Row>
-                      <Col />
-                      <Col xs="8" className="text-center">
-                        <Input
-                          type="text"
-                          name="artist"
-                          placeholder="Artist Name"
-                          className="rounded-0"
-                          value={this.state.artist}
-                          onChange={this.updateArtist}
-                          required
-                        />
-                      </Col>
-                      <Col />
-                    </Row>
-                    {this.state.artist && (
-                      <Link
-                        className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
-                        to={`/artist/${this.state.artist}/${
-                          window.location.hash
-                        }`}
-                      >
-                        <span id="go" className="text-uppercase">
-                          Search Artist
-                        </span>
-                      </Link>
-                    )}
-                  </div>
-                )}
-              </Col>
-            </Row>
+
+                <p className="lead">
+                  To get started, login with your Spotify account.
+                </p>
+                <a
+                  className="btn badge-pill btn-success btn-lg mt-1"
+                  href={
+                    window.location.href.includes("localhost")
+                      ? "http://localhost:8888/login"
+                      : "https://playlistcreator-backend.herokuapp.com/login"
+                  }
+                >
+                  <span id="go" className="p-4 text-uppercase">
+                    Login With Spotify
+                  </span>
+                </a>
+              </div>
+            )}
           </Container>
         </Jumbotron>
 

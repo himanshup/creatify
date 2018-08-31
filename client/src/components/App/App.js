@@ -165,40 +165,49 @@ class App extends Component {
               return <Billboard getHashParams={() => this.getHashParams()} />;
             }}
           />
-          <Route
-            path={`/artist/:artist`}
-            render={({ match }) => {
-              return (
-                <Artist
-                  params={match.params}
-                  getHashParams={() => this.getHashParams()}
-                />
-              );
-            }}
-          />
-          <Route
-            path={`/create/:artistId`}
-            render={({ match }) => {
-              return (
-                <RelatedArtists
-                  params={match.params}
-                  getHashParams={() => this.getHashParams()}
-                />
-              );
-            }}
-          />
-          <Route
-            path={`/top/tracks`}
-            render={() => {
-              return <TopTracks getHashParams={() => this.getHashParams()} />;
-            }}
-          />
-          <Route
-            path={`/top/artists`}
-            render={() => {
-              return <TopArtists getHashParams={() => this.getHashParams()} />;
-            }}
-          />
+
+          {this.state.loggedIn && (
+            <div>
+              <Route
+                path={`/artist/:artist`}
+                render={({ match }) => {
+                  return (
+                    <Artist
+                      params={match.params}
+                      getHashParams={() => this.getHashParams()}
+                    />
+                  );
+                }}
+              />
+              <Route
+                path={`/create/:artistId`}
+                render={({ match }) => {
+                  return (
+                    <RelatedArtists
+                      params={match.params}
+                      getHashParams={() => this.getHashParams()}
+                    />
+                  );
+                }}
+              />
+              <Route
+                path={`/top/tracks`}
+                render={() => {
+                  return (
+                    <TopTracks getHashParams={() => this.getHashParams()} />
+                  );
+                }}
+              />
+              <Route
+                path={`/top/artists`}
+                render={() => {
+                  return (
+                    <TopArtists getHashParams={() => this.getHashParams()} />
+                  );
+                }}
+              />
+            </div>
+          )}
         </div>
       </BrowserRouter>
     );

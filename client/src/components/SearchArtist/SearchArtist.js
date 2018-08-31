@@ -66,7 +66,6 @@ class Artist extends Component {
   };
 
   searchArtist = () => {
-    //search for artist passed in props
     this.setState({
       loading: true
     });
