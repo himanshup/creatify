@@ -187,7 +187,6 @@ class RelatedArtists extends Component {
         name: this.state.playlistName
       })
       .then(playlist => {
-        console.log("Created Playlist");
         this.setState({
           playlistId: playlist.id
         });
@@ -198,7 +197,6 @@ class RelatedArtists extends Component {
         );
       })
       .then(response => {
-        console.log("Added tracks to your playlist");
         return spotifyApi.getPlaylist(this.state.userId, this.state.playlistId);
       })
       .then(playlist => {

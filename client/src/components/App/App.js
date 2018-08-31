@@ -15,6 +15,8 @@ import Home from "../Home/Home";
 import Billboard from "../Billboard/Billboard";
 import Artist from "../SearchArtist/SearchArtist";
 import RelatedArtists from "../RelatedArtists/RelatedArtists";
+import TopTracks from "../TopTracks/TopTracks";
+import TopArtists from "../TopArtists/TopArtists";
 import SpotifyWebApi from "spotify-web-api-js";
 
 var spotifyApi = new SpotifyWebApi();
@@ -109,6 +111,26 @@ class App extends Component {
               </Link>
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
+                {this.state.loggedIn && (
+                  <Nav className="mr-auto" navbar>
+                    <NavItem>
+                      <Link
+                        to={`/top/tracks/${window.location.hash}`}
+                        className="nav-link"
+                      >
+                        Top Tracks
+                      </Link>
+                    </NavItem>
+                    <NavItem>
+                      <Link
+                        to={`/top/artists/${window.location.hash}`}
+                        className="nav-link"
+                      >
+                        Top Artists
+                      </Link>
+                    </NavItem>
+                  </Nav>
+                )}
                 <Nav className="ml-auto" navbar>
                   {this.state.loggedIn ? (
                     <NavItem>
@@ -163,6 +185,18 @@ class App extends Component {
                   getHashParams={() => this.getHashParams()}
                 />
               );
+            }}
+          />
+          <Route
+            path={`/top/tracks`}
+            render={() => {
+              return <TopTracks getHashParams={() => this.getHashParams()} />;
+            }}
+          />
+          <Route
+            path={`/top/artists`}
+            render={() => {
+              return <TopArtists getHashParams={() => this.getHashParams()} />;
             }}
           />
         </div>
