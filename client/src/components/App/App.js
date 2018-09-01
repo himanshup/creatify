@@ -28,12 +28,14 @@ class App extends Component {
       loggedIn: false,
       userId: "",
       displayName: "",
-      isOpen: false
+      isOpen: false,
+      activeTab: ""
     };
   }
 
   componentDidMount() {
     // get user info
+    console.log(window.location.pathname);
     this.getAccessToken();
   }
 
@@ -106,14 +108,23 @@ class App extends Component {
         <div>
           <Navbar dark expand="md">
             <Container>
-              <Link className="navbar-brand" to={`/${window.location.hash}`}>
+              <Link
+                className="navbar-brand"
+                to={`/${window.location.hash}`}
+                onClick={() => this.setState({ activeTab: "" })}
+              >
                 Playlist Creator
               </Link>
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 {this.state.loggedIn && (
-                  <Nav className="mr-auto" navbar>
-                    <NavItem>
+                  <Nav className="mr-auto verticalLine" navbar>
+                    <NavItem
+                      className={
+                        this.state.activeTab === "tracks" ? "active" : ""
+                      }
+                      onClick={() => this.setState({ activeTab: "tracks" })}
+                    >
                       <Link
                         to={`/top/tracks/${window.location.hash}`}
                         className="nav-link"
@@ -121,7 +132,12 @@ class App extends Component {
                         Top Tracks
                       </Link>
                     </NavItem>
-                    <NavItem>
+                    <NavItem
+                      className={
+                        this.state.activeTab === "artists" ? "active" : ""
+                      }
+                      onClick={() => this.setState({ activeTab: "artists" })}
+                    >
                       <Link
                         to={`/top/artists/${window.location.hash}`}
                         className="nav-link"
