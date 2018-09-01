@@ -1,5 +1,5 @@
 # Spotify Playlist Creator
-!(https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img1.png)  
+![Image 1](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img1.png)  
 
 Create a Spotify plyalist based on an artist or with songs from Billboard's top 100. To create a playlist based on an artist, just type their name in the search bar and select the artist. You will then get a list of related artists and the option to get the top tracks for each artist. After getting the top tracks, you have the option to save the playlist on Spotify. You can also see your top tracks/artists and make a playlist with them.
 
@@ -20,5 +20,5 @@ yarn dev
 ```
 
 ## Screenshots
-!(https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img2.png)  
-!(https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img3.png)
+![Image 2](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img2.png)  
+![Image 3](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img3.png)
