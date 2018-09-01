@@ -1,6 +1,6 @@
 # Spotify Playlist Creator
 
-Creates Spotify playlists based on an artist or with songs from Billboard's top 100. To create a playlist based on an artist, just type their name in the search bar and select the artist. You will then get a list of related artists and the option to get the top tracks for each artist. After getting the top tracks, you have the option to save the playlist on Spotify.
+Create a Spotify plyalist based on an artist or with songs from Billboard's top 100. To create a playlist based on an artist, just type their name in the search bar and select the artist. You will then get a list of related artists and the option to get the top tracks for each artist. After getting the top tracks, you have the option to save the playlist on Spotify. You can also see your top tracks/artists and make a playlist with them.
 
 View it here https://playlistcreator.herokuapp.com/. You must be signed in to search for artists and create playlists.
 
@@ -17,3 +17,5 @@ npm install
 cd ..
 yarn dev
 ```
+
+## Screenshots
