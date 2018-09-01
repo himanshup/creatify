@@ -11,7 +11,7 @@ View it here https://playlistcreator.herokuapp.com/. You must be signed in to se
 * Create playlist with your top 50 tracks.
 * Create playlist based on your top 10 artists.
 
-## Installation
+## Development
 
 **Note**: You need a Client ID and Client Secret ID to run this. Replace the CLIENT_ID and CLIENT_SECRET values in `server.js` with your own. To run with `npm` instead, you will have to edit the `dev` script in `package.json` (in the root of the folder, not client).
 
