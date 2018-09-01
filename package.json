@@ -1,5 +1,5 @@
 {
-  "name": "example-create-react-app-express",
+  "name": "spotify-playlist-creator",
   "version": "1.0.0",
   "scripts": {
     "client": "cd client && yarn start",
