@@ -21,9 +21,6 @@ View it here https://playlistcreator.herokuapp.com/. You must be signed in to se
 git clone https://github.com/himanshup/spotify-playlist-creator.git
 cd spotify-playlist-creator
 npm install
-cd client
-npm install
-cd ..
 yarn dev
 ```
 
