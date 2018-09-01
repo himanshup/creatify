@@ -21,4 +21,5 @@ yarn dev
 
 ## Screenshots
 ![Image 2](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img2.png)  
-![Image 3](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img3.png)
+![Image 3](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img3.png)  
+![Image 4](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/img4.png)
