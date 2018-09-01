@@ -9,3 +9,7 @@
   text-decoration: none;
   transition: 0.1s ease !important;
 }
+
+.footerIcon {
+  font-size: 35px !important;
+}
