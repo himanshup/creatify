@@ -15,7 +15,7 @@ View it here https://playlistcreator.herokuapp.com/. You must be signed in to se
 
 ## Development
 
-**Note**: You need a Client ID and Client Secret ID to run this. To get them, go [here](https://developer.spotify.com/dashboard/login) and create an app. You will also need to add `http://localhost:8888/callback` as a Redirect URI. Replace the CLIENT_ID and CLIENT_SECRET values in `server.js` with your own. To run with `yarn` instead, you will have to edit the `dev` script in `package.json` (in the root of the folder, not client).
+**Note**: You need a Client ID and Client Secret ID to run this. To get them, go [here](https://developer.spotify.com/dashboard/login) and create an app. You will also need to add `http://localhost:8888/callback` as a Redirect URI. Replace the CLIENT_ID and CLIENT_SECRET values in `app.js` with your own. To run with `yarn` instead, you will have to edit the `dev` script in `package.json` (in the root of the folder, not client).
 
 ```
 git clone https://github.com/himanshup/spotify-playlist-creator.git
