@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Container, Button, Table } from "reactstrap";
+import { Container, Button } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import Tracks from "../Tracks/Tracks";
 var spotifyApi = new SpotifyWebApi();
 
 class TopTracks extends Component {
@@ -120,24 +121,26 @@ class TopTracks extends Component {
           <div>
             {this.state.loggedIn ? (
               <div>
-                {!this.state.topTracksPlaylistCreated && (
-                  <div className="text-center">
-                    <h1 className="mt-3">Top Tracks</h1>
-                    <p className="">
-                      These are your top 50 tracks. Click the button to create a
-                      playlist with these songs.
-                    </p>
-                    <Button
-                      className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                      onClick={() => this.createPlaylist()}
-                    >
-                      <span id="go" className="text-uppercase">
-                        Create Playlist
-                      </span>
-                    </Button>
+                {!this.state.topTracksPlaylistCreated ? (
+                  <div>
+                    <div className="text-center">
+                      <h1 className="mt-3">Top Tracks</h1>
+                      <p className="">
+                        These are your top 50 tracks. Click the button to create
+                        a playlist with these songs.
+                      </p>
+                      <Button
+                        className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
+                        onClick={() => this.createPlaylist()}
+                      >
+                        <span id="go" className="text-uppercase">
+                          Create Playlist
+                        </span>
+                      </Button>
+                    </div>
+                    <Tracks tracks={this.state.songs} />
                   </div>
-                )}
-                {this.state.topTracksPlaylistCreated && (
+                ) : (
                   <div className="text-center">
                     <h1 className="mt-3">Playlist Created</h1>
                     <p>Click the button to view it on Spotify.</p>
@@ -150,27 +153,6 @@ class TopTracks extends Component {
                       </span>
                     </Button>
                   </div>
-                )}
-                {!this.state.topTracksPlaylistCreated && (
-                  <Table className="mt-3" bordered striped>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Artist</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {!this.state.topTracksPlaylistCreated &&
-                        this.state.songs.map((song, index) => (
-                          <tr key={index}>
-                            <th scope="row">{index}</th>
-                            <td>{song.name}</td>
-                            <td>{song.artists[0].name}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </Table>
                 )}
                 <Footer />
               </div>

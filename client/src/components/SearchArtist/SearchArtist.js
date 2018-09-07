@@ -1,19 +1,10 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import SpotifyWebApi from "spotify-web-api-js";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  CardImg,
-  CardBody,
-  Input
-} from "reactstrap";
+import { Container, Row, Col, Button, Input } from "reactstrap";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
-import "./SearchArtist.css"
+import Artists from "../Artists/Artists";
+import "./SearchArtist.css";
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
@@ -102,73 +93,43 @@ class Artist extends Component {
           <Loading />
         ) : (
           <div>
-            {this.state.loggedIn ? (
-              <div>
-                <h1 className="mt-3 text-center">
-                  Results for {this.state.searchItem}
-                </h1>
-                <p className="text-center">
-                  Click on an artist to get a list of related artists.
-                </p>
-                <div>
-                  <Row>
-                    <Col />
-                    <Col sm="6" lg="5" className="text-center">
-                      <Input
-                        type="text"
-                        name="artist"
-                        placeholder="Artist Name"
-                        className="rounded-0"
-                        value={this.state.artist}
-                        onChange={this.updateArtist}
-                        required
-                      />
-                    </Col>
-                    <Col />
-                  </Row>
-                  {this.state.artist && (
-                    <div className="text-center">
-                      <Button
-                        className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
-                        onClick={() => this.searchArtist()}
-                      >
-                        <span id="go" className="text-uppercase">
-                          Search Artist
-                        </span>
-                      </Button>
-                    </div>
-                  )}
-                  <Row className="mt-4">
-                    {this.state.artists.map((item, index) => (
-                      <Col sm="6" md="4" lg="3" key={index}>
-                        <Card className="mt-4 shadow-sm border-0 rounded-0">
-                          <Link
-                            to={`/create/${item.id}/${window.location.hash}`}
-                          >
-                            <CardImg
-                              className="rounded-0"
-                              top
-                              width=""
-                              src={
-                                item.images.length > 0
-                                  ? item.images[0].url
-                                  : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
-                              }
-                              alt=""
-                            />
-                          </Link>
-                          <CardBody>{item.name}</CardBody>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
+            <h1 className="mt-3 text-center">
+              Results for {this.state.searchItem}
+            </h1>
+            <div>
+              <Row>
+                <Col />
+                <Col
+                  sm="6"
+                  lg="5"
+                  className={`text-center mt-1 ${!this.state.artist && `mb-2`}`}
+                >
+                  <Input
+                    type="text"
+                    name="artist"
+                    placeholder="Artist Name"
+                    className="rounded-0"
+                    value={this.state.artist}
+                    onChange={this.updateArtist}
+                    required
+                  />
+                </Col>
+                <Col />
+              </Row>
+              {this.state.artist && (
+                <div className="text-center">
+                  <Button
+                    className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5 mb-2"
+                    onClick={() => this.searchArtist()}
+                  >
+                    <span id="go" className="text-uppercase">
+                      Search Artist
+                    </span>
+                  </Button>
                 </div>
-              </div>
-            ) : (
-              <h1 className="text-center mt-3">
-                You must be logged in to do that.
-              </h1>
-            )}
+              )}
+              <Artists artists={this.state.artists} />
+            </div>
             <Footer />
           </div>
         )}

@@ -1,4 +1,17 @@
+ul {
+  counter-reset: rowNumber;
+}
+
+ul .media {
+  counter-increment: rowNumber;
+}
+
+.artistNum strong::before {
+  content: counter(rowNumber);
+}
+
 .card {
+  box-shadow: 1px 0 5px 0 rgba(0, 0, 0, 0.15) !important;
   -webkit-transition: box-shadow 0.3s ease-in-out;
   -moz-transition: box-shadow 0.3s ease-in-out;
   -o-transition: box-shadow 0.3s ease-in-out;

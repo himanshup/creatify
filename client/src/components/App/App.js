@@ -35,7 +35,6 @@ class App extends Component {
 
   componentDidMount() {
     // get user info
-    console.log(window.location.pathname);
     this.getAccessToken();
   }
 
@@ -175,15 +174,17 @@ class App extends Component {
               return <Home getHashParams={() => this.getHashParams()} />;
             }}
           />
-          <Route
-            path={`/billboard`}
-            render={() => {
-              return <Billboard getHashParams={() => this.getHashParams()} />;
-            }}
-          />
 
           {this.state.loggedIn && (
             <div>
+              <Route
+                path={`/billboard`}
+                render={() => {
+                  return (
+                    <Billboard getHashParams={() => this.getHashParams()} />
+                  );
+                }}
+              />
               <Route
                 path={`/artist/:artist`}
                 render={({ match }) => {

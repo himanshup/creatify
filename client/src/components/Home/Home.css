@@ -58,3 +58,7 @@ input[type="color"]:focus,
   text-decoration: none;
   transition: 0.1s ease !important;
 }
+
+.centered-and-cropped {
+  object-fit: cover;
+}

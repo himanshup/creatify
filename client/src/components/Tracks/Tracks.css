@@ -1,0 +1,15 @@
+ul {
+  counter-reset: rowNumber;
+}
+
+ul li {
+  counter-increment: rowNumber;
+}
+
+.trackNum strong::before {
+  content: counter(rowNumber);
+}
+
+/* .list-unstyled {
+  box-shadow: 1px 0 5px 0 rgba(0, 0, 0, 0.15) !important;
+} */

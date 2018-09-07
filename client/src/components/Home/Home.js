@@ -1,19 +1,12 @@
 import React, { Component } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import {
-  Container,
-  Col,
-  Row,
-  Input,
-  Jumbotron,
-  Card,
-  CardImg,
-  CardBody
-} from "reactstrap";
+import { Container, Col, Row, Input, Jumbotron } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import NotLoggedIn from "../NotLoggedIn/NotLoggedIn";
+import Artists from "../Artists/Artists";
 var spotifyApi = new SpotifyWebApi();
 
 class Home extends Component {
@@ -34,40 +27,11 @@ class Home extends Component {
 
   getUserTopArtists = () => {
     spotifyApi
-      .getMyTopArtists()
+      .getMyTopArtists({ limit: 8 })
       .then(artists => {
-        for (const artist of artists.items) {
-          if (this.state.userRecommendedArtists.length === 8) {
-            break;
-          } else {
-            if (artist.images.length < 1) {
-              this.setState({
-                userRecommendedArtists: this.state.userRecommendedArtists.concat(
-                  [
-                    {
-                      id: artist.id,
-                      name: artist.name,
-                      image:
-                        "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
-                    }
-                  ]
-                )
-              });
-            } else {
-              this.setState({
-                userRecommendedArtists: this.state.userRecommendedArtists.concat(
-                  [
-                    {
-                      id: artist.id,
-                      name: artist.name,
-                      image: artist.images[0].url
-                    }
-                  ]
-                )
-              });
-            }
-          }
-        }
+        this.setState({
+          userRecommendedArtists: artists.items
+        });
       })
       .then(response => {
         this.setState({
@@ -147,15 +111,14 @@ class Home extends Component {
       <div>
         <Jumbotron className="rounded-0">
           <Container className="text-center bg-transparent">
-            <h1 className="display-3">The Playlist Creator</h1>
+            <h1 className="display-3">Playlist Creator</h1>
             <p className="lead mt-3">Easily create Spotify playlists.</p>
             {this.state.loggedIn ? (
               <Row>
                 <Col>
                   <p className="lead mt-2">
                     Create a playlist with songs from Billboard's Top 100. Click
-                    the button to see a list of the songs. You can remove any
-                    you don't like.
+                    the button to see a list of the songs.
                   </p>
                   <Link
                     className="btn badge-pill btn-success btn-lg mb-3 pr-5 pl-5"
@@ -169,8 +132,7 @@ class Home extends Component {
                 <Col>
                   <p className="lead mt-2">
                     Create a playlist based on an artist. Simply search for an
-                    artist and you will be shown a list of related artists plus
-                    top tracks for each artist.{" "}
+                    artist and you will be shown a list of related artists.
                   </p>
                   <Row>
                     <Col />
@@ -202,37 +164,7 @@ class Home extends Component {
                 </Col>
               </Row>
             ) : (
-              <div>
-                <p className="lead">
-                  Playlist Creator can create a playlist based on an artist or
-                  with songs from Billboard's Top 100. To see a list of the top
-                  100 songs, click{" "}
-                  <Link
-                    className="customLinks"
-                    to={`/billboard/${window.location.hash}`}
-                  >
-                    here
-                  </Link>
-                  . You can also create a playlist with your top tracks or based
-                  on your top artists.
-                </p>
-
-                <p className="lead">
-                  To get started, login with your Spotify account.
-                </p>
-                <a
-                  className="btn badge-pill btn-success btn-lg mt-1"
-                  href={
-                    window.location.href.includes("localhost")
-                      ? "http://localhost:8888/login"
-                      : "https://playlistcreator-backend.herokuapp.com/login"
-                  }
-                >
-                  <span id="go" className="p-4 text-uppercase">
-                    Login With Spotify
-                  </span>
-                </a>
-              </div>
+              <NotLoggedIn />
             )}
           </Container>
         </Jumbotron>
@@ -244,29 +176,12 @@ class Home extends Component {
             {this.state.loggedIn && (
               <div>
                 <h4 className="text-muted">Recommended artists for you</h4>
-                <Row>
-                  {this.state.userRecommendedArtists.map((item, index) => (
-                    <Col sm="6" md="4" lg="3" key={index}>
-                      <Card className="mt-4 shadow-sm border-0 rounded-0">
-                        <Link to={`/create/${item.id}/${window.location.hash}`}>
-                          <CardImg
-                            className="rounded-0"
-                            top
-                            width=""
-                            src={item.image}
-                            alt=""
-                          />
-                        </Link>
-                        <CardBody>{item.name}</CardBody>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
+                <Artists artists={this.state.userRecommendedArtists} />
               </div>
             )}
+            <Footer />
           </Container>
         )}
-        <Footer />
       </div>
     );
   }

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Container, Button, Table } from "reactstrap";
+import { Container, Button } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
+import Tracks from "../Tracks/Tracks";
 import "./Billboard.css";
 var spotifyApi = new SpotifyWebApi();
 
@@ -65,12 +66,31 @@ class Billboard extends Component {
       .then(
         axios.spread((array1, array2) => {
           const tracks = array1.data.concat(array2.data);
-          this.setState({
-            songs: tracks,
-            loading: false
-          });
+          for (const track of tracks) {
+            spotifyApi
+              .searchTracks(`${track.title}`, { limit: 1 })
+              .then(response => {
+                this.setState({
+                  songs: this.state.songs.concat([response.tracks.items[0]]),
+                  uris: this.state.uris.concat([response.tracks.items[0].uri])
+                });
+              })
+              .catch(error => {
+                if (error) {
+                  this.setState({
+                    loggedIn: false,
+                    loading: false
+                  });
+                }
+              });
+          }
         })
       )
+      .then(response => {
+        this.setState({
+          loading: false
+        });
+      })
       .catch(error => {
         if (error) {
           this.setState({
@@ -89,45 +109,10 @@ class Billboard extends Component {
     });
   };
 
-  // gets track uris first and then creates the playlist
-  async getUrisAndCreatePlaylist() {
+  createPlaylist = () => {
     this.setState({
       loading: true
     });
-    try {
-      await this.getTrackUris();
-      this.createPlaylist();
-    } catch (error) {
-      if (error) {
-        this.setState({
-          loggedIn: false,
-          loading: false
-        });
-      }
-    }
-  }
-
-  getTrackUris = () => {
-    for (const track of this.state.songs) {
-      spotifyApi
-        .searchTracks(`${track.title}`, { limit: 1 })
-        .then(response => {
-          this.setState({
-            uris: this.state.uris.concat([response.tracks.items[0].uri])
-          });
-        })
-        .catch(error => {
-          if (error) {
-            this.setState({
-              loggedIn: false,
-              loading: false
-            });
-          }
-        });
-    }
-  };
-
-  createPlaylist = () => {
     spotifyApi
       .createPlaylist(this.state.userId, {
         name: "Billboard 100",
@@ -202,29 +187,14 @@ class Billboard extends Component {
                     <span>To create a playlist, you must be logged in.</span>
                   )}
                 </p>
-                {this.state.loggedIn ? (
-                  <Button
-                    className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                    onClick={this.getUrisAndCreatePlaylist.bind(this)}
-                  >
-                    <span id="go" className="text-uppercase">
-                      Create Playlist
-                    </span>
-                  </Button>
-                ) : (
-                  <a
-                    className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                    href={
-                      window.location.href.includes("localhost")
-                        ? "http://localhost:8888/login"
-                        : "https://playlistcreator-backend.herokuapp.com/login"
-                    }
-                  >
-                    <span id="go" className="text-uppercase">
-                      Login With Spotify
-                    </span>
-                  </a>
-                )}
+                <Button
+                  className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
+                  onClick={() => this.createPlaylist()}
+                >
+                  <span id="go" className="text-uppercase">
+                    Create Playlist
+                  </span>
+                </Button>
               </div>
             )}
 
@@ -243,34 +213,7 @@ class Billboard extends Component {
               </div>
             )}
             {!this.state.billboardPlaylistCreated && (
-              <Table className="mt-3" bordered striped>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Artist</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!this.state.billboardPlaylistCreated &&
-                    this.state.songs.map((item, index) => (
-                      <tr key={index}>
-                        <th scope="row">{item.rank}</th>
-                        <td>{item.title}</td>
-                        <td>
-                          {item.artist}
-                          <button
-                            type="button"
-                            className="btn close float-right"
-                            onClick={() => this.removeTrack(item.title)}
-                          >
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </Table>
+              <Tracks tracks={this.state.songs} />
             )}
             <Footer />
           </div>
