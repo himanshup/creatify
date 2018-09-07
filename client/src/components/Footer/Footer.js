@@ -10,9 +10,9 @@ class Footer extends Component {
           <div className="container text-center">
             <a
               href="https://github.com/himanshup/spotify-playlist-creator"
-              className="text-dark"
+              className="text-dark "
             >
-              <FaGithub className="footerIcon" />
+              <FaGithub className="footerIcon grow" />
             </a>
           </div>
         </footer>

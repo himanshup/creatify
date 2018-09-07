@@ -11,11 +11,7 @@ const Tracks = props => {
   return (
     <ul className="list-unstyled shadow-lg mt-3">
       {props.tracks.map((track, index) => (
-        <li
-          key={index}
-          className="media list-group-item-action p-3"
-          style={{ cursor: "pointer" }}
-        >
+        <li key={index} className="media list-group-item-action p-3">
           <small className="trackNum float-left align-self-center mr-2 ml-1">
             <strong />
           </small>
@@ -34,9 +30,7 @@ const Tracks = props => {
           />
           <div className="media-body align-self-center">
             <h6>{track.name}</h6>
-            <small className="text-muted">
-              {track.artists[0].name}
-            </small>
+            <small className="text-muted">{track.artists[0].name}</small>
           </div>
           <small className="float-right align-self-center text-muted">
             {millisToMinutesAndSeconds(track.duration_ms)}

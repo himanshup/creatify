@@ -11,5 +11,10 @@ ul li {
 }
 
 /* .list-unstyled {
-  box-shadow: 1px 0 5px 0 rgba(0, 0, 0, 0.15) !important;
+  -webkit-box-shadow: 0 -2px 40px rgba(87, 95, 104, 0.2);
+  box-shadow: 0 -2px 40px rgba(87, 95, 104, 0.2);
 } */
+
+.media {
+  cursor: pointer;
+}
