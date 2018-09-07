@@ -11,7 +11,7 @@ var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 var x = require("x-ray")();
-var schedule = require("node-schedule");
+// var schedule = require("node-schedule");
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
@@ -34,27 +34,27 @@ var generateRandomString = function(length) {
   return text;
 };
 
-var j = schedule.scheduleJob("* */6 * * *", function() {
-  getSongs();
-});
+// var j = schedule.scheduleJob("* */6 * * *", function() {
+//   getSongs();
+// });
 
-function getSongs() {
-  x("https://www.billboard.com/charts/hot-100", ".chart-number-one", [
-    {
-      rank: "[data-rank]@data-rank",
-      title: ".chart-number-one__title",
-      artist: ".chart-number-one__artist a"
-    }
-  ]).write("./songs/billboard1.json");
+// function getSongs() {
+//   x("https://www.billboard.com/charts/hot-100", ".chart-number-one", [
+//     {
+//       rank: "[data-rank]@data-rank",
+//       title: ".chart-number-one__title",
+//       artist: ".chart-number-one__artist a"
+//     }
+//   ]).write("./songs/billboard1.json");
 
-  x("https://www.billboard.com/charts/hot-100", ".chart-list-item", [
-    {
-      rank: ".chart-list-item__rank ",
-      title: ".chart-list-item__title-text",
-      artist: ".chart-list-item__artist"
-    }
-  ]).write("./songs/billboard99.json");
-}
+//   x("https://www.billboard.com/charts/hot-100", ".chart-list-item", [
+//     {
+//       rank: ".chart-list-item__rank ",
+//       title: ".chart-list-item__title-text",
+//       artist: ".chart-list-item__artist"
+//     }
+//   ]).write("./songs/billboard99.json");
+// }
 
 var stateKey = "spotify_auth_state";
 
@@ -182,37 +182,37 @@ if (process.env.NODE_ENV !== "production") {
 
 // API calls
 app.get("/api/billboard1", function(req, res) {
-  // var stream = x(
-  //   "https://www.billboard.com/charts/hot-100",
-  //   ".chart-number-one",
-  //   [
-  //     {
-  //       rank: "[data-rank]@data-rank",
-  //       title: ".chart-number-one__title",
-  //       artist: ".chart-number-one__artist a"
-  //     }
-  //   ]
-  // ).stream();
-  // stream.pipe(res);
+  var stream = x(
+    "https://www.billboard.com/charts/hot-100",
+    ".chart-number-one",
+    [
+      {
+        rank: "[data-rank]@data-rank",
+        title: ".chart-number-one__title",
+        artist: ".chart-number-one__artist a"
+      }
+    ]
+  ).stream();
+  stream.pipe(res);
 
-  res.sendFile(path.join(__dirname, "/songs", "billboard1.json"));
+  // res.sendFile(path.join(__dirname, "/songs", "billboard1.json"));
 });
 
 app.get("/api/billboard100", function(req, res) {
-  // var stream = x(
-  //   "https://www.billboard.com/charts/hot-100",
-  //   ".chart-list-item",
-  //   [
-  //     {
-  //       rank: ".chart-list-item__rank ",
-  //       title: ".chart-list-item__title-text",
-  //       artist: ".chart-list-item__artist"
-  //     }
-  //   ]
-  // ).stream();
-  // stream.pipe(res);
+  var stream = x(
+    "https://www.billboard.com/charts/hot-100",
+    ".chart-list-item",
+    [
+      {
+        rank: ".chart-list-item__rank ",
+        title: ".chart-list-item__title-text",
+        artist: ".chart-list-item__artist"
+      }
+    ]
+  ).stream();
+  stream.pipe(res);
 
-  res.sendFile(path.join(__dirname, "/songs", "billboard99.json"));
+  // res.sendFile(path.join(__dirname, "/songs", "billboard99.json"));
 });
 
 if (process.env.NODE_ENV === "production") {
