@@ -1,5 +1,3 @@
-# Spotify Playlist Creator
-
 ![Image 1](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image1.png)
 
 Playlist Creator is a web app for creating Spotify playlists. Created using [Spotify Web API](https://developer.spotify.com/documentation/web-api/), React, and Node.js.
