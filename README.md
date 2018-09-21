@@ -6,7 +6,7 @@ View it here https://playlistcreator.herokuapp.com/. You must be signed in to se
 
 ## Features
 
-- Create playlist based on an artist.
+- Create playlist based on an artist (search for an artist and it will show related artists + option to get top tracks for each artist).
 - Create playlist with songs from Billboard's Top 100.
 - Create playlist with your top 50 tracks.
 - Create playlist based on your top 10 artists.
