@@ -25,10 +25,10 @@ const Tracks = props => {
             className={`mr-3 centered-and-cropped ${
               index === 99 ? `` : `${index <= 8 ? `ml-3` : `ml-2`}`
             } `}
-            width="65px"
-            height="65px"
+            width="70px"
+            height="70px"
           />
-          <div className="media-body align-self-center">
+          <div className="media-body mt-1 align-self-center">
             <h6>{track.name}</h6>
             <small className="text-muted">{track.artists[0].name}</small>
           </div>
