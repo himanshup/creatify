@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
-import { Container, Row, Col, Button, Input } from "reactstrap";
+import { Container, Row, Col, Input } from "reactstrap";
+import { Link } from "react-router-dom";
+import queryString from "query-string";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
 import Artists from "../Artists/Artists";
@@ -14,19 +16,20 @@ class Artist extends Component {
       loading: true,
       loggedIn: false,
       userId: "",
-      artist: props.params.artist,
-      searchItem: props.params.artist,
+      artist: "",
+      searchItem: "",
       artists: []
     };
   }
 
   componentDidMount() {
+    const values = queryString.parse(this.props.location.search);
+    this.searchArtist(values.search);
     this.setAccessToken();
   }
 
   setAccessToken = () => {
-    const params = this.props.getHashParams();
-    const token = params.access_token;
+    const token = localStorage.getItem("token");
     if (token) {
       spotifyApi.setAccessToken(token);
       this.setState({
@@ -34,7 +37,6 @@ class Artist extends Component {
       });
       this.getUserInfo();
       // gets search results on mount
-      this.searchArtist();
     }
   };
 
@@ -56,15 +58,15 @@ class Artist extends Component {
       });
   };
 
-  searchArtist = () => {
+  searchArtist = value => {
     this.setState({
       loading: true
     });
     spotifyApi
-      .searchArtists(this.state.artist, { limit: 5 })
+      .searchArtists(value, { limit: 5 })
       .then(response => {
         this.setState({
-          searchItem: this.state.artist,
+          searchItem: value,
           artist: "",
           artists: response.artists.items,
           loading: false
@@ -111,21 +113,24 @@ class Artist extends Component {
                     className="rounded-0"
                     value={this.state.artist}
                     onChange={this.updateArtist}
-                    required
+                    autoComplete="off"
                   />
                 </Col>
                 <Col />
               </Row>
               {this.state.artist && (
                 <div className="text-center">
-                  <Button
+                  <Link
                     className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5 mb-2"
-                    onClick={() => this.searchArtist()}
+                    to={`/artists?search=${this.state.artist}/${
+                      window.location.hash
+                    }`}
+                    onClick={() => this.searchArtist(this.state.artist)}
                   >
                     <span id="go" className="text-uppercase">
                       Search Artist
                     </span>
-                  </Button>
+                  </Link>
                 </div>
               )}
               <Artists artists={this.state.artists} />

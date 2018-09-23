@@ -151,21 +151,6 @@ class Billboard extends Component {
       });
   };
 
-  getRefreshToken = () => {
-    const params = this.props.getHashParams();
-    const refresh_token = params.refresh_token;
-    axios
-      .get("/refresh_token", {
-        params: { refresh_token: refresh_token }
-      })
-      .then(response => {
-        spotifyApi.setAccessToken(response.data.access_token);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
   render() {
     return (
       <Container>

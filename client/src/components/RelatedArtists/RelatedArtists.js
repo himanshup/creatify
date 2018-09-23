@@ -271,6 +271,7 @@ class RelatedArtists extends Component {
                                 className="rounded-0"
                                 value={this.state.playlistName}
                                 onChange={this.updatePlaylistName}
+                                autoComplete="off"
                               />
 
                               {this.state.playlistName && (

@@ -144,7 +144,7 @@ class Home extends Component {
                         className="rounded-0"
                         value={this.state.artist}
                         onChange={this.updateArtist}
-                        required
+                        autoComplete="off"
                       />
                     </Col>
                     <Col />
@@ -152,7 +152,7 @@ class Home extends Component {
                   {this.state.artist && (
                     <Link
                       className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
-                      to={`/artist/${this.state.artist}/${
+                      to={`/artists?search=${this.state.artist}/${
                         window.location.hash
                       }`}
                     >

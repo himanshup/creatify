@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import Home from "../Home/Home";
 import Billboard from "../Billboard/Billboard";
-import Artist from "../SearchArtist/SearchArtist";
+import SearchArtist from "../SearchArtist/SearchArtist";
 import RelatedArtists from "../RelatedArtists/RelatedArtists";
 import TopTracks from "../TopTracks/TopTracks";
 import TopArtists from "../TopArtists/TopArtists";
@@ -186,18 +186,18 @@ class App extends Component {
                 }}
               />
               <Route
-                path={`/artist/:artist`}
-                render={({ match }) => {
+                path={`/artists`}
+                render={props => {
                   return (
-                    <Artist
-                      params={match.params}
+                    <SearchArtist
                       getHashParams={() => this.getHashParams()}
+                      {...props}
                     />
                   );
                 }}
               />
               <Route
-                path={`/create/:artistId`}
+                path={`/artist/:artistId`}
                 render={({ match }) => {
                   return (
                     <RelatedArtists
