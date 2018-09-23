@@ -152,7 +152,7 @@ class Home extends Component {
                   {this.state.artist && (
                     <Link
                       className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
-                      to={`/artists?search=${this.state.artist}/${
+                      to={`/artists?search=${this.state.artist}${
                         window.location.hash
                       }`}
                     >

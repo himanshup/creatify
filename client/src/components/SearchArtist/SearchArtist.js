@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { Container, Row, Col, Input } from "reactstrap";
 import { Link } from "react-router-dom";
-import queryString from "query-string";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
 import Artists from "../Artists/Artists";
@@ -23,13 +22,12 @@ class Artist extends Component {
   }
 
   componentDidMount() {
-    const values = queryString.parse(this.props.location.search);
-    this.searchArtist(values.search);
     this.setAccessToken();
   }
 
   setAccessToken = () => {
-    const token = localStorage.getItem("token");
+    const params = this.props.getHashParams();
+    const token = params.access_token;
     if (token) {
       spotifyApi.setAccessToken(token);
       this.setState({
@@ -37,6 +35,8 @@ class Artist extends Component {
       });
       this.getUserInfo();
       // gets search results on mount
+      const artist = this.props.location.search.split("=")[1];
+      this.searchArtist(artist);
     }
   };
 
@@ -122,7 +122,7 @@ class Artist extends Component {
                 <div className="text-center">
                   <Link
                     className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5 mb-2"
-                    to={`/artists?search=${this.state.artist}/${
+                    to={`/artists?search=${this.state.artist}${
                       window.location.hash
                     }`}
                     onClick={() => this.searchArtist(this.state.artist)}
