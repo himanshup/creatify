@@ -62,7 +62,10 @@ class Billboard extends Component {
 
   getTop100Songs = () => {
     axios
-      .all([axios.get("/api/billboard1"), axios.get("/api/billboard100")])
+      .all([
+        axios.get("/api/billboard/top/1"),
+        axios.get("/api/billboard/top/99")
+      ])
       .then(
         axios.spread((array1, array2) => {
           const tracks = array1.data.concat(array2.data);

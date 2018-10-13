@@ -1,22 +1,16 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- */
 require("dotenv").config();
-var express = require("express"); // Express web server framework
+var express = require("express");
 var path = require("path");
-var request = require("request"); // "Request" library
+var request = require("request");
 var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 var x = require("x-ray")();
 // var schedule = require("node-schedule");
 
-var client_id = process.env.CLIENT_ID; // Your client id
-var client_secret = process.env.CLIENT_SECRET; // Your secret
+var client_id = process.env.CLIENT_ID;
+var client_secret = process.env.CLIENT_SECRET;
 var redirect_uri = "http://localhost:8888/callback";
-// Your redirect uri
 var port = process.env.PORT || 8888;
 /**
  * Generates a random string containing numbers and letters
@@ -68,7 +62,6 @@ if (process.env.NODE_ENV !== "production") {
     var state = generateRandomString(16);
     res.cookie(stateKey, state);
 
-    // your application requests authorization
     var scope =
       "user-read-private user-read-email user-read-playback-state playlist-modify-private playlist-modify-public user-top-read";
     res.redirect(
@@ -84,9 +77,6 @@ if (process.env.NODE_ENV !== "production") {
   });
 
   app.get("/callback", function(req, res) {
-    // your application requests refresh and access tokens
-    // after checking the state parameter
-
     var code = req.query.code || null;
     var state = req.query.state || null;
     var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -126,12 +116,9 @@ if (process.env.NODE_ENV !== "production") {
             json: true
           };
 
-          // use the access token to access the Spotify Web API
           request.get(options, function(error, response, body) {
             // console.log(body);
           });
-
-          // we can also pass the token to the browser to make requests from there
 
           res.redirect(
             "http://localhost:3000/#" +
@@ -153,7 +140,6 @@ if (process.env.NODE_ENV !== "production") {
   });
 
   app.get("/refresh_token", function(req, res) {
-    // requesting access token from refresh token
     var refresh_token = req.query.refresh_token;
     var authOptions = {
       url: "https://accounts.spotify.com/api/token",
@@ -180,8 +166,8 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// API calls
-app.get("/api/billboard1", function(req, res) {
+// get the rank 1 song on billboard
+app.get("/api/billboard/top/1", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
     ".chart-number-one",
@@ -198,7 +184,8 @@ app.get("/api/billboard1", function(req, res) {
   // res.sendFile(path.join(__dirname, "/songs", "billboard1.json"));
 });
 
-app.get("/api/billboard100", function(req, res) {
+// get the rest of the songs
+app.get("/api/billboard/top/99", function(req, res) {
   var stream = x(
     "https://www.billboard.com/charts/hot-100",
     ".chart-list-item",
@@ -216,9 +203,7 @@ app.get("/api/billboard100", function(req, res) {
 });
 
 if (process.env.NODE_ENV === "production") {
-  // Serve any static files
   app.use(express.static(path.join(__dirname, "client/build")));
-  // Handle React routing, return all requests to React app
   app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
