@@ -22,3 +22,7 @@ input[type="color"]:focus,
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
+
+.cover {
+  min-height: 100px;
+}

@@ -11,13 +11,14 @@ import {
   NavLink
 } from "reactstrap";
 import axios from "axios";
+import SpotifyWebApi from "spotify-web-api-js";
 import Home from "../Home/Home";
 import Billboard from "../Billboard/Billboard";
 import SearchArtist from "../SearchArtist/SearchArtist";
 import RelatedArtists from "../RelatedArtists/RelatedArtists";
 import TopTracks from "../TopTracks/TopTracks";
 import TopArtists from "../TopArtists/TopArtists";
-import SpotifyWebApi from "spotify-web-api-js";
+import Playlists from "../Playlists/Playlists";
 
 var spotifyApi = new SpotifyWebApi();
 
@@ -29,7 +30,8 @@ class App extends Component {
       userId: "",
       displayName: "",
       isOpen: false,
-      activeTab: ""
+      activeTab: "",
+      redirect: false
     };
   }
 
@@ -56,7 +58,8 @@ class App extends Component {
       .catch(error => {
         this.setState({
           loggedIn: false,
-          loading: false
+          loading: false,
+          redirect: true
         });
       });
   };
@@ -174,9 +177,17 @@ class App extends Component {
               return <Home getHashParams={() => this.getHashParams()} />;
             }}
           />
-
+          {/* {this.state.redirect && <Redirect to="/" />} */}
           {this.state.loggedIn && (
             <div>
+              <Route
+                path={`/playlists`}
+                render={() => {
+                  return (
+                    <Playlists getHashParams={() => this.getHashParams()} />
+                  );
+                }}
+              />
               <Route
                 path={`/billboard`}
                 render={() => {

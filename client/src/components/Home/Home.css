@@ -27,7 +27,7 @@ input[type="color"]:focus,
   font-size: 1.35rem !important;
 }
 
-.jumbotron {
+.homeJumbotron {
   background: #f4f4f4 !important;
   min-height: 480px;
 }

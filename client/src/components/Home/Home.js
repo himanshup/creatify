@@ -109,7 +109,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Jumbotron className="rounded-0">
+        <Jumbotron className="rounded-0 homeJumbotron">
           <Container className="text-center bg-transparent">
             <h1 className="display-3">Playlist Creator</h1>
             <p className="lead mt-3">Easily create Spotify playlists.</p>

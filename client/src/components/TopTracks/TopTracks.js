@@ -4,6 +4,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
 import Tracks from "../Tracks/Tracks";
+import "./TopTracks.css";
 var spotifyApi = new SpotifyWebApi();
 
 class TopTracks extends Component {
@@ -114,32 +115,34 @@ class TopTracks extends Component {
 
   render() {
     return (
-      <Container>
-        {this.state.loading === true ? (
+      <div>
+        {this.state.loading ? (
           <Loading />
         ) : (
           <div>
-            {this.state.loggedIn ? (
+            {!this.state.topTracksPlaylistCreated && (
+              <div className="jumbotron jumbotron-fluid header">
+                <div className="container text-center">
+                  <h1>Top Tracks</h1>
+                  <p className="">
+                    These are your top 50 tracks. Click the button to create a
+                    playlist with these songs.
+                  </p>
+                  <Button
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                    onClick={() => this.createPlaylist()}
+                  >
+                    <span id="go" className="text-uppercase">
+                      Create Playlist
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            )}
+            <Container>
               <div>
                 {!this.state.topTracksPlaylistCreated ? (
-                  <div>
-                    <div className="text-center">
-                      <h1 className="mt-3">Top Tracks</h1>
-                      <p className="">
-                        These are your top 50 tracks. Click the button to create
-                        a playlist with these songs.
-                      </p>
-                      <Button
-                        className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                        onClick={() => this.createPlaylist()}
-                      >
-                        <span id="go" className="text-uppercase">
-                          Create Playlist
-                        </span>
-                      </Button>
-                    </div>
-                    <Tracks tracks={this.state.songs} />
-                  </div>
+                  <Tracks tracks={this.state.songs} />
                 ) : (
                   <div className="text-center">
                     <h1 className="mt-3">Playlist Created</h1>
@@ -156,14 +159,10 @@ class TopTracks extends Component {
                 )}
                 <Footer />
               </div>
-            ) : (
-              <h1 className="text-center mt-3">
-                You must be logged in to do that.
-              </h1>
-            )}
+            </Container>
           </div>
         )}
-      </Container>
+      </div>
     );
   }
 }

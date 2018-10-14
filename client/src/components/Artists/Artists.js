@@ -16,7 +16,7 @@ const Artists = props => {
                 src={
                   artist.images[0]
                     ? artist.images[0].url
-                    : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                    : "https://res.cloudinary.com/dmrien29n/image/upload/v1539506039/default-artist.png"
                 }
                 alt=""
               />
@@ -41,7 +41,7 @@ const Artists = props => {
                   src={
                     artist.images[0]
                       ? artist.images[0].url
-                      : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                      : "https://res.cloudinary.com/dmrien29n/image/upload/v1539506039/default-artist.png"
                   }
                   alt=""
                 />

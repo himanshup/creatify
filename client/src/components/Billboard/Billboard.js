@@ -165,15 +165,8 @@ class Billboard extends Component {
               <div className="text-center">
                 <h1 className="mt-3">The Billboard Hot 100</h1>
                 <p className="">
-                  These are the songs from the Billboard Hot 100.{" "}
-                  {this.state.loggedIn ? (
-                    <span>
-                      Click the button to create a playlist and save it on
-                      Spotify.
-                    </span>
-                  ) : (
-                    <span>To create a playlist, you must be logged in.</span>
-                  )}
+                  These are the songs from the Billboard Hot 100. Click the
+                  button to create a playlist and save it on Spotify.
                 </p>
                 <Button
                   className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"

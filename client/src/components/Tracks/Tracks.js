@@ -9,7 +9,7 @@ const millisToMinutesAndSeconds = millis => {
 
 const Tracks = props => {
   return (
-    <ul className="list-unstyled shadow-lg mt-3">
+    <ul className="list-unstyled bg-white shadow-lg mt-3">
       {props.tracks.map((track, index) => (
         <li key={index} className="media list-group-item-action p-3">
           <small className="trackNum float-left align-self-center mr-2 ml-1">
@@ -19,13 +19,13 @@ const Tracks = props => {
             src={
               track.album.images[0]
                 ? track.album.images[0].url
-                : "https://a1yola.com/wp-content/uploads/2018/05/default-artist.jpg"
+                : "https://res.cloudinary.com/dmrien29n/image/upload/v1539506039/default-artist.png"
             }
             alt=""
-            className={`mr-3 centered-and-cropped ${
+            className={`mr-3 rounded centered-and-cropped shadow ${
               index === 99 ? `` : `${index <= 8 ? `ml-3` : `ml-2`}`
             } `}
-            width="70px"
+            width="60px"
             height="70px"
           />
           <div className="media-body mt-1 align-self-center">
