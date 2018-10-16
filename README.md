@@ -1,12 +1,13 @@
-![Image 1](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image1.png)
+![Image 1](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/home.png)
 
 Playlist Creator is a web app for creating Spotify playlists. Created using [Spotify Web API](https://developer.spotify.com/documentation/web-api/), React, and Node.js.
 
-View it here https://playlistcreator.herokuapp.com/. You must be signed in to search for artists and create playlists.
+View it [here](https://playlistcreator.herokuapp.com/). You must be signed in to search for artists and create playlists. If you don't want to sign in, checkout the screenshots at the bottom.
 
 ## Features
 
 - Create playlist based on an artist (search for an artist and it will show related artists + option to get top tracks for each artist).
+- Create playlist based on search criteria (enter some keywords and you will be shown 50 matching playlists, along with the top tracks across all 50 of them.)
 - Create playlist with songs from Billboard's Top 100.
 - Create playlist with your top 50 tracks.
 - Create playlist based on your top 10 artists.
@@ -27,7 +28,8 @@ npm run dev
 
 ## Screenshots
 
-![Image 2](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image2.png)  
-![Image 3](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image3.png)  
+![Image 2](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/hot100.png)  
+![Image 3](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/search.png)  
 ![Image 4](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image4.png)
-![Image 5](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/image5.png)
+![Image 5](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/topTracks.png)
+![Image 6](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/searchPlaylists.png)
