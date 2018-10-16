@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Container, Button } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
@@ -16,9 +15,9 @@ class TopArtists extends Component {
       userId: "",
       artists: [],
       topTracks: [],
-      gotTopTracks: false,
       topTrackUris: [],
       playlistId: "",
+      gotTopTracks: false,
       createdPlaylist: false,
       playlist: {}
     };
@@ -174,7 +173,7 @@ class TopArtists extends Component {
 
   render() {
     return (
-      <Container>
+      <div>
         {this.state.loading === true ? (
           <Loading />
         ) : (
@@ -182,7 +181,7 @@ class TopArtists extends Component {
             {!this.state.createdPlaylist && (
               <div>
                 {!this.state.gotTopTracks && (
-                  <div>
+                  <div className="container">
                     <div className="text-center">
                       <h1 className="mt-3">Top Artists</h1>
                       <p>
@@ -190,14 +189,14 @@ class TopArtists extends Component {
                         <strong>Get Top Tracks</strong> to get a list of top
                         tracks from these artists.
                       </p>
-                      <Button
-                        className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
+                      <button
+                        className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
                         onClick={this.getTopTracks.bind(this)}
                       >
-                        <span id="go" className="text-uppercase">
+                        <span className="text-uppercase btns">
                           Get Top Tracks
                         </span>
-                      </Button>
+                      </button>
                     </div>
                     <Artists artists={this.state.artists} links={false} />
                   </div>
@@ -205,45 +204,47 @@ class TopArtists extends Component {
 
                 {this.state.gotTopTracks && (
                   <div>
-                    <div className="text-center">
-                      <h1 className="mt-3">Top Tracks</h1>
-                      <p>
-                        These are the top tracks for each artist. Click the
-                        button to save the playlist on Spotify.
-                      </p>
-                      <Button
-                        className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                        onClick={this.getUrisAndCreatePlaylist.bind(this)}
-                      >
-                        <span id="go" className="text-uppercase">
-                          Create Playlist
-                        </span>
-                      </Button>
+                    <div className="jumbotron jumbotron-fluid header">
+                      <div className="container text-center">
+                        <h1>Top Tracks</h1>
+                        <p>
+                          These are the top tracks for each artist. Click the
+                          button to create and save a playlist with these songs.
+                        </p>
+                        <button
+                          className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                          onClick={this.getUrisAndCreatePlaylist.bind(this)}
+                        >
+                          <span className="text-uppercase btns">
+                            Create Playlist
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                    <Tracks tracks={this.state.topTracks} />
+                    <div className="container">
+                      <Tracks tracks={this.state.topTracks} />
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
             {this.state.createdPlaylist && (
-              <div className="text-center">
+              <div className="container text-center">
                 <h1 className="mt-3">Playlist Created</h1>
                 <p>Click the button to view it on Spotify.</p>
-                <Button
+                <button
                   className="btn badge-pill btn-success btn-lg pr-5 pl-5"
                   href={this.state.playlist.external_urls.spotify}
                 >
-                  <span id="go" className="text-uppercase">
-                    View Playlist
-                  </span>
-                </Button>
+                  <span className="text-uppercase btns">View Playlist</span>
+                </button>
               </div>
             )}
             <Footer />
           </div>
         )}
-      </Container>
+      </div>
     );
   }
 }

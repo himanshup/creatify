@@ -1,5 +1,104 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
 
+@media only screen and (max-width: 456px) {
+  .display-4 {
+    font-size: 2.5em !important;
+  }
+
+  .lead {
+    font-size: 1em !important;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  h1 {
+    font-size: 1.7em !important;
+  }
+}
+
 body {
   font-family: "Nunito", sans-serif !important;
+}
+
+input[name="artist"]:focus,
+.uneditable-input:focus {
+  box-shadow: none !important;
+  outline: 0 none !important;
+  -webkit-transition: border-color ease-in-out 0.15s,
+    box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+input::placeholder {
+  font-size: 18px;
+  font-style: italic !important;
+}
+
+.btn-success {
+  background-color: #1db954 !important;
+  border-color: #1db954 !important;
+}
+
+.btn-success:hover {
+  background-color: #1ed760 !important;
+  border-color: #1ed760 !important;
+}
+
+.btn-success:focus,
+.btn-success.focus {
+  box-shadow: none !important;
+  background-color: #1d963a !important;
+  border-color: #1d963a !important;
+}
+
+.btn-success.disabled,
+.btn-success:disabled {
+  color: #fff;
+  background-color: #1d963a;
+  border-color: #1d963a;
+}
+
+.btn-success:not(:disabled):not(.disabled):active,
+.btn-success:not(:disabled):not(.disabled).active,
+.show > .btn-success.dropdown-toggle {
+  color: #fff;
+  background-color: #1e7e34;
+  border-color: #1c7430;
+}
+
+.btn-success:not(:disabled):not(.disabled):active:focus,
+.btn-success:not(:disabled):not(.disabled).active:focus,
+.show > .btn-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+
+.btns {
+  letter-spacing: 2px;
+}
+
+.centered-and-cropped {
+  object-fit: cover;
+}
+
+.header {
+  margin-bottom: -210px !important;
+  min-height: 450px;
+}
+
+.jumbotron {
+  background: #f4f4f4 !important;
+}
+
+.search {
+  -webkit-box-shadow: 0px 9px 54px -13px rgba(0, 0, 0, 0.36);
+  -moz-box-shadow: 0px 9px 54px -13px rgba(0, 0, 0, 0.36);
+  box-shadow: 0px 9px 54px -13px rgba(0, 0, 0, 0.36);
+}
+
+.searchBtn {
+  width: 50px !important;
+  height: 50px !important;
+  padding: 6px 0px !important;
+  border-radius: 25px !important;
 }

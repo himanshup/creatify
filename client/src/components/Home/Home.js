@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import { Container, Col, Row, Input, Jumbotron } from "reactstrap";
+import { Container, Dropdown, DropdownMenu, DropdownToggle } from "reactstrap";
+import { IoIosSearch } from "react-icons/io";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
-import NotLoggedIn from "../NotLoggedIn/NotLoggedIn";
+
 import Artists from "../Artists/Artists";
+
 var spotifyApi = new SpotifyWebApi();
 
 class Home extends Component {
@@ -16,8 +18,10 @@ class Home extends Component {
       loggedIn: false,
       userId: "",
       loading: true,
-      artist: "",
-      userRecommendedArtists: []
+      query: "",
+      userRecommendedArtists: [],
+      dropdownOpen: false,
+      searchBy: "artists"
     };
   }
 
@@ -79,108 +83,116 @@ class Home extends Component {
       });
   };
 
-  searchArtist = () => {
-    // e.preventDefault();
-    spotifyApi
-      .searchArtists(this.state.artist, { limit: 5 })
-      .then(response => {
-        console.log(response.artists.items);
-        this.setState({
-          artist: "",
-          artists: response.artists.items
-        });
-      })
-      .catch(error => {
-        if (error) {
-          this.setState({
-            loggedIn: false,
-            loading: false
-          });
-        }
-      });
+  updateValue = e => {
+    this.setState({
+      query: e.target.value
+    });
   };
 
-  updateArtist = e => {
+  toggle = () => {
     this.setState({
-      artist: e.target.value
+      dropdownOpen: !this.state.dropdownOpen
     });
   };
 
   render() {
     return (
       <div>
-        <Jumbotron className="rounded-0 homeJumbotron">
-          <Container className="text-center bg-transparent">
-            <h1 className="display-3">Playlist Creator</h1>
-            <p className="lead mt-3">Easily create Spotify playlists.</p>
-            {this.state.loggedIn ? (
-              <Row>
-                <Col>
-                  <p className="lead mt-2">
-                    Create a playlist with songs from Billboard's Top 100. Click
-                    the button to see a list of the songs.
-                  </p>
-                  <Link
-                    className="btn badge-pill btn-success btn-lg mb-3 pr-5 pl-5"
-                    to={`/billboard/${window.location.hash}`}
-                  >
-                    <span id="go" className="text-uppercase">
-                      Get top 100 songs
-                    </span>
-                  </Link>
-                </Col>
-                <Col>
-                  <p className="lead mt-2">
-                    Create a playlist based on an artist. Simply search for an
-                    artist and you will be shown a list of related artists.
-                  </p>
-                  <Row>
-                    <Col />
-                    <Col xs="8" className="text-center">
-                      <Input
-                        type="text"
-                        name="artist"
-                        placeholder="Artist Name"
-                        className="rounded-0"
-                        value={this.state.artist}
-                        onChange={this.updateArtist}
-                        autoComplete="off"
-                      />
-                    </Col>
-                    <Col />
-                  </Row>
-                  {this.state.artist && (
-                    <Link
-                      className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5"
-                      to={`/artists?search=${this.state.artist}${
-                        window.location.hash
-                      }`}
-                    >
-                      <span id="go" className="text-uppercase">
-                        Search Artist
-                      </span>
-                    </Link>
-                  )}
-                </Col>
-              </Row>
-            ) : (
-              <NotLoggedIn />
-            )}
-          </Container>
-        </Jumbotron>
-
-        {this.state.loading && this.state.loggedIn ? (
+        {this.state.loading ? (
           <Loading />
         ) : (
-          <Container>
-            {this.state.loggedIn && (
-              <div>
-                <h4 className="text-muted">Recommended artists for you</h4>
-                <Artists artists={this.state.userRecommendedArtists} />
+          <div>
+            <div className="jumbotron jumbotron-fluid homeJumbotron">
+              <div className="container">
+                <h1 className="display-4 text-center">Playlist Creator</h1>
+                <p className="lead text-center">
+                  Easily create Spotify playlists.
+                </p>
+
+                <div className="row mt-5">
+                  <div className="col" />
+                  <div className="col-12 col-md-8 col-lg-6">
+                    <Dropdown
+                      isOpen={this.state.dropdownOpen}
+                      toggle={this.toggle}
+                      direction="down"
+                      className="text-center"
+                    >
+                      <span className="lead">Search</span>{" "}
+                      <DropdownToggle
+                        tag="span"
+                        className="border-bottom dropdownToggle"
+                        onClick={this.toggle}
+                        data-toggle="dropdown"
+                        aria-expanded={this.state.dropdownOpen}
+                        caret
+                      >
+                        <span className="lead text-capitalize">
+                          {this.state.searchBy}
+                        </span>
+                      </DropdownToggle>
+                      <DropdownMenu className="border-0 shadow-sm">
+                        <div
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.setState({ searchBy: "artists" });
+                          }}
+                        >
+                          Artists
+                        </div>
+                        <div
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.setState({ searchBy: "playlists" });
+                          }}
+                        >
+                          Playlists
+                        </div>
+                      </DropdownMenu>
+                    </Dropdown>
+                    <div className="card mt-4 border-0 badge-pill search p-2">
+                      <div className="d-flex">
+                        <input
+                          type="text"
+                          name="artist"
+                          className="form-control form-control-lg border-0 "
+                          placeholder={
+                            this.state.searchBy === "artists"
+                              ? "Artist Name"
+                              : "Keywords"
+                          }
+                          value={
+                            this.state.searchBy === "artists"
+                              ? this.state.artist
+                              : this.state.term
+                          }
+                          onChange={this.updateValue}
+                          autoComplete="off"
+                        />
+                        <div className="align-self-center">
+                          <Link
+                            className={`btn btn-success searchBtn shadow ${this
+                              .state.query.length < 1 && `disabled`}`}
+                            to={`/${this.state.searchBy}?search=${
+                              this.state.query
+                            }${window.location.hash}`}
+                          >
+                            <IoIosSearch size="25" className="mt-1" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col" />
+                </div>
               </div>
-            )}
-            <Footer />
-          </Container>
+            </div>
+            <Container className="mt-4">
+              <h4 className="text-muted">Recommended artists for you</h4>
+              <Artists artists={this.state.userRecommendedArtists} />
+              <Footer />
+            </Container>
+          </div>
         )}
       </div>
     );

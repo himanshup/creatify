@@ -10,11 +10,6 @@ ul li {
   content: counter(rowNumber);
 }
 
-/* .list-unstyled {
-  -webkit-box-shadow: 0 -2px 40px rgba(87, 95, 104, 0.2);
-  box-shadow: 0 -2px 40px rgba(87, 95, 104, 0.2);
-} */
-
-.media {
+/* .media {
   cursor: pointer;
-}
+} */

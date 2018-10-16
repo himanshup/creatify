@@ -19,6 +19,7 @@ import RelatedArtists from "../RelatedArtists/RelatedArtists";
 import TopTracks from "../TopTracks/TopTracks";
 import TopArtists from "../TopArtists/TopArtists";
 import Playlists from "../Playlists/Playlists";
+import NotLoggedIn from "../NotLoggedIn/NotLoggedIn";
 
 var spotifyApi = new SpotifyWebApi();
 
@@ -147,6 +148,19 @@ class App extends Component {
                         Top Artists
                       </Link>
                     </NavItem>
+                    <NavItem
+                      className={
+                        this.state.activeTab === "billboard" ? "active" : ""
+                      }
+                      onClick={() => this.setState({ activeTab: "billboard" })}
+                    >
+                      <Link
+                        to={`/billboard/${window.location.hash}`}
+                        className="nav-link"
+                      >
+                        Hot 100
+                      </Link>
+                    </NavItem>
                   </Nav>
                 )}
                 <Nav className="ml-auto" navbar>
@@ -170,21 +184,24 @@ class App extends Component {
             </Container>
           </Navbar>
 
-          <Route
-            exact
-            path={`/`}
-            render={() => {
-              return <Home getHashParams={() => this.getHashParams()} />;
-            }}
-          />
           {/* {this.state.redirect && <Redirect to="/" />} */}
-          {this.state.loggedIn && (
+          {this.state.loggedIn ? (
             <div>
               <Route
-                path={`/playlists`}
+                exact
+                path={`/`}
                 render={() => {
+                  return <Home getHashParams={() => this.getHashParams()} />;
+                }}
+              />
+              <Route
+                path={`/playlists`}
+                render={props => {
                   return (
-                    <Playlists getHashParams={() => this.getHashParams()} />
+                    <Playlists
+                      getHashParams={() => this.getHashParams()}
+                      {...props}
+                    />
                   );
                 }}
               />
@@ -235,6 +252,8 @@ class App extends Component {
                 }}
               />
             </div>
+          ) : (
+            <NotLoggedIn />
           )}
         </div>
       </BrowserRouter>

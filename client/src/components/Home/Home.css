@@ -1,49 +1,7 @@
-textarea:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="datetime"]:focus,
-input[type="datetime-local"]:focus,
-input[type="date"]:focus,
-input[type="month"]:focus,
-input[type="time"]:focus,
-input[type="week"]:focus,
-input[type="number"]:focus,
-input[type="email"]:focus,
-input[type="url"]:focus,
-input[type="search"]:focus,
-input[type="tel"]:focus,
-input[type="color"]:focus,
-.uneditable-input:focus {
-  border-color: #797979;
-  box-shadow: none !important;
-  outline: 0 none !important;
-  -webkit-transition: border-color ease-in-out 0.15s,
-    box-shadow ease-in-out 0.15s;
-  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+.dropdownToggle {
+  cursor: pointer;
 }
 
-.lead {
-  font-size: 1.35rem !important;
-}
-
-.homeJumbotron {
-  background: #f4f4f4 !important;
-  min-height: 480px;
-}
-
-.customLinks {
-  color: #1db954;
-  text-decoration: none;
-  transition: 0.1s ease !important;
-}
-
-.customLinks:hover {
-  color: #1ed760;
-  text-decoration: none;
-  transition: 0.1s ease !important;
-}
-
-.centered-and-cropped {
-  object-fit: cover;
+.dropdown-item {
+  cursor: pointer;
 }

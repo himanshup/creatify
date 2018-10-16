@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Container, Button } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import axios from "axios";
 import Loading from "../Loading/Loading";
@@ -156,50 +155,49 @@ class Billboard extends Component {
 
   render() {
     return (
-      <Container>
+      <div>
         {this.state.loading === true ? (
           <Loading />
         ) : (
           <div>
-            {!this.state.billboardPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">The Billboard Hot 100</h1>
-                <p className="">
-                  These are the songs from the Billboard Hot 100. Click the
-                  button to create a playlist and save it on Spotify.
-                </p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                  onClick={() => this.createPlaylist()}
-                >
-                  <span id="go" className="text-uppercase">
-                    Create Playlist
-                  </span>
-                </Button>
-              </div>
-            )}
+            <div className="jumbotron jumbotron-fluid header">
+              {!this.state.billboardPlaylistCreated ? (
+                <div className="container text-center">
+                  <h1>The Hot 100</h1>
+                  <p>
+                    These are the songs from the Billboard Hot 100. Click the
+                    button to create a playlist and save it on Spotify.
+                  </p>
+                  <button
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                    onClick={() => this.createPlaylist()}
+                  >
+                    <span className="text-uppercase btns">Create Playlist</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="container text-center">
+                  <h1 className="mt-3">Playlist Created</h1>
+                  <p>Click the button to view it on Spotify.</p>
+                  <button
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5 shadow"
+                    href={this.state.billboardPlaylist.external_urls.spotify}
+                  >
+                    <span className="text-uppercase btns">View Playlist</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
-            {this.state.billboardPlaylistCreated && (
-              <div className="text-center">
-                <h1 className="mt-3">Playlist Created</h1>
-                <p>Click the button to view it on Spotify.</p>
-                <Button
-                  className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                  href={this.state.billboardPlaylist.external_urls.spotify}
-                >
-                  <span id="go" className="text-uppercase">
-                    View Playlist
-                  </span>
-                </Button>
-              </div>
-            )}
             {!this.state.billboardPlaylistCreated && (
-              <Tracks tracks={this.state.songs} />
+              <div className="container">
+                <Tracks tracks={this.state.songs} />
+              </div>
             )}
             <Footer />
           </div>
         )}
-      </Container>
+      </div>
     );
   }
 }

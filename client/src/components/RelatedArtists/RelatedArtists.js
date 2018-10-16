@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Row, Col, Input } from "reactstrap";
+import { Button, Row, Col } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
@@ -41,8 +41,6 @@ class RelatedArtists extends Component {
         loggedIn: token ? true : false
       });
       this.getUserInfo();
-      // get artist with the id that was passed in props
-      // need this to display the artist the user selected on new page with related artists
       this.getRelatedArtists();
     }
   };
@@ -145,7 +143,6 @@ class RelatedArtists extends Component {
 
   //gets track uris for each track, uris are needed to add tracks to the playlist
   getTrackUris = () => {
-    // const shuffledTracks = this.shuffle(this.state.topTracks);
     const uris = [];
     for (const track of this.state.topTracks) {
       uris.push(track.uri);
@@ -219,7 +216,7 @@ class RelatedArtists extends Component {
 
   render() {
     return (
-      <Container>
+      <div>
         {this.state.loading === true ? (
           <Loading />
         ) : (
@@ -229,68 +226,74 @@ class RelatedArtists extends Component {
                 {!this.state.createdPlaylist && (
                   <div>
                     {!this.state.gotTopTracks && (
-                      <div>
-                        <div className="text-center">
-                          <h1 className="mt-3">Related Artists</h1>
-                          <p>
-                            Press <strong>Get Top Tracks</strong> to get a list
-                            of top tracks from these artists.
-                          </p>
-                          <Button
-                            className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                            onClick={this.getTopTracks.bind(this)}
-                          >
-                            <span id="go" className="text-uppercase">
-                              Get Top Tracks
-                            </span>
-                          </Button>
-                        </div>
+                      <div className="container text-center">
+                        <h1 className="mt-3">Related Artists</h1>
+                        <p>
+                          Press <strong>Get Top Tracks</strong> to get a list of
+                          top tracks from these artists.
+                        </p>
+                        <Button
+                          className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                          onClick={this.getTopTracks.bind(this)}
+                        >
+                          <span className="text-uppercase btns">
+                            Get Top Tracks
+                          </span>
+                        </Button>{" "}
                         <Artists artists={this.state.artists} links={false} />
                       </div>
                     )}
                     {this.state.gotTopTracks && (
                       <div>
-                        <div className="text-center">
-                          <h1 className="mt-3">Top Tracks</h1>
-                          <p>
-                            These are the top tracks for each artist. To save
-                            the playlist on Spotify, enter a playlist name and
-                            press <strong>Create Playlist</strong>.
-                          </p>
-                          <Row>
-                            <Col />
-                            <Col
-                              sm="6"
-                              lg="5"
-                              className={`text-center ${!this.state
-                                .playlistName && `mb-2`}`}
-                            >
-                              <Input
-                                type="text"
-                                placeholder="Playlist Name"
-                                className="rounded-0"
-                                value={this.state.playlistName}
-                                onChange={this.updatePlaylistName}
-                                autoComplete="off"
-                              />
-
-                              {this.state.playlistName && (
-                                <Button
-                                  className="btn badge-pill btn-success btn-lg mt-3 pr-5 pl-5 mb-2"
-                                  onClick={this.getUrisAndCreatePlaylist.bind(
-                                    this
-                                  )}
-                                >
-                                  <span id="go" className="text-uppercase">
-                                    Create Playlist
-                                  </span>
-                                </Button>
-                              )}
-                            </Col>
-                            <Col />
-                          </Row>
+                        <div className="jumbotron jumbotron-fluid header">
+                          <div className="container text-center">
+                            <h1>Top Tracks</h1>
+                            <p>
+                              These are the top tracks for each artist. Enter a
+                              playlist name and click the button to save it.
+                            </p>
+                            <Row>
+                              <Col />
+                              <Col
+                                sm="6"
+                                lg="5"
+                                className={`text-center ${!this.state
+                                  .playlistName && `mb-2`}`}
+                              >
+                                <div className="input-group">
+                                  <input
+                                    type="text"
+                                    name="playlist"
+                                    placeholder="Playlist Name"
+                                    className="form-control form-control-lg border-0 shadow"
+                                    autoComplete="off"
+                                    value={this.state.playlistName}
+                                    onChange={this.updatePlaylistName}
+                                  />
+                                  <div className="input-group-append">
+                                    <button
+                                      className={`btn btn-success shadow `}
+                                      disabled={
+                                        this.state.playlistName.length < 1
+                                          ? true
+                                          : false
+                                      }
+                                      onClick={this.getUrisAndCreatePlaylist.bind(
+                                        this
+                                      )}
+                                    >
+                                      Create
+                                    </button>
+                                  </div>
+                                </div>
+                              </Col>
+                              <Col />
+                            </Row>
+                          </div>
                         </div>
-                        <Tracks tracks={this.state.topTracks} />
+                        <div className="container">
+                          <Tracks tracks={this.state.topTracks} />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -301,12 +304,10 @@ class RelatedArtists extends Component {
                     <h1 className="mt-3">Playlist Created</h1>
                     <p>Click the button to view it on Spotify.</p>
                     <Button
-                      className="btn badge-pill btn-success btn-lg pr-5 pl-5"
+                      className="btn badge-pill btn-success btn-lg pr-5 pl-5 shadow"
                       href={this.state.playlist.external_urls.spotify}
                     >
-                      <span id="go" className="text-uppercase">
-                        View Playlist
-                      </span>
+                      <span className="text-uppercase btns">View Playlist</span>
                     </Button>
                   </div>
                 )}
@@ -317,7 +318,7 @@ class RelatedArtists extends Component {
             <Footer />
           </div>
         )}
-      </Container>
+      </div>
     );
   }
 }

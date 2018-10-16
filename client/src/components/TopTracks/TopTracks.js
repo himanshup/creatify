@@ -125,16 +125,14 @@ class TopTracks extends Component {
                 <div className="container text-center">
                   <h1>Top Tracks</h1>
                   <p className="">
-                    These are your top 50 tracks. Click the button to create a
-                    playlist with these songs.
+                    These are your top 50 tracks. Click the button to create and
+                    save a playlist with these songs.
                   </p>
                   <Button
-                    className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                    className="btn badge-pill btn-success btn-lg shadow pr-5 pl-5 mb-2"
                     onClick={() => this.createPlaylist()}
                   >
-                    <span id="go" className="text-uppercase">
-                      Create Playlist
-                    </span>
+                    <span className="text-uppercase btns">Create Playlist</span>
                   </Button>
                 </div>
               </div>
@@ -144,17 +142,35 @@ class TopTracks extends Component {
                 {!this.state.topTracksPlaylistCreated ? (
                   <Tracks tracks={this.state.songs} />
                 ) : (
-                  <div className="text-center">
-                    <h1 className="mt-3">Playlist Created</h1>
-                    <p>Click the button to view it on Spotify.</p>
-                    <Button
-                      className="btn badge-pill btn-success btn-lg pr-5 pl-5"
-                      href={this.state.topTracksPlaylist.external_urls.spotify}
-                    >
-                      <span id="go" className="text-uppercase">
-                        View Playlist
-                      </span>
-                    </Button>
+                  <div className="row">
+                    <div className="col mt-5 align-self-center">
+                      <div className="mt-3 text-center">
+                        <h1>Playlist Created</h1>
+                        <p>Click the button to view it on Spotify.</p>
+                        <Button
+                          className="btn badge-pill btn-success btn-lg shadow pr-5 pl-5"
+                          href={
+                            this.state.topTracksPlaylist.external_urls.spotify
+                          }
+                        >
+                          <span className="text-uppercase btns">
+                            View Playlist
+                          </span>
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="col mt-5">
+                      <div className="card shadow border-0 playlistCard mx-auto mt-3">
+                        <img
+                          src={this.state.topTracksPlaylist.images[0].url}
+                          alt=""
+                          className="card-img-top"
+                        />
+                        <h5 className="p-3 card-title">
+                          {this.state.topTracksPlaylist.name}
+                        </h5>
+                      </div>
+                    </div>
                   </div>
                 )}
                 <Footer />

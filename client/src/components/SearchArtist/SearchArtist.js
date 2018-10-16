@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import SpotifyWebApi from "spotify-web-api-js";
-import { Container, Row, Col, Input } from "reactstrap";
+import { Container } from "reactstrap";
 import { Link } from "react-router-dom";
+import { IoIosSearch } from "react-icons/io";
+import SpotifyWebApi from "spotify-web-api-js";
+import querystring from "querystring";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
 import Artists from "../Artists/Artists";
-import "./SearchArtist.css";
+
 var spotifyApi = new SpotifyWebApi();
 
 class Artist extends Component {
@@ -15,8 +17,8 @@ class Artist extends Component {
       loading: true,
       loggedIn: false,
       userId: "",
-      artist: "",
-      searchItem: "",
+      query: "",
+      searchedItem: "",
       artists: []
     };
   }
@@ -35,8 +37,11 @@ class Artist extends Component {
       });
       this.getUserInfo();
       // gets search results on mount
-      const artist = this.props.location.search.split("=")[1];
-      this.searchArtist(artist);
+      const query = querystring.parse(this.props.location.search);
+      this.setState({
+        searchedItem: query["?search"]
+      });
+      this.searchArtist(query["?search"]);
     }
   };
 
@@ -66,8 +71,8 @@ class Artist extends Component {
       .searchArtists(value, { limit: 5 })
       .then(response => {
         this.setState({
-          searchItem: value,
-          artist: "",
+          searchedItem: value,
+          query: "",
           artists: response.artists.items,
           loading: false
         });
@@ -84,61 +89,68 @@ class Artist extends Component {
 
   updateArtist = e => {
     this.setState({
-      artist: e.target.value
+      query: e.target.value
     });
   };
 
   render() {
     return (
-      <Container className="mb-5">
+      <div>
         {this.state.loading === true ? (
           <Loading />
         ) : (
           <div>
-            <h1 className="mt-3 text-center">
-              Results for {this.state.searchItem}
-            </h1>
-            <div>
-              <Row>
-                <Col />
-                <Col
-                  sm="6"
-                  lg="5"
-                  className={`text-center mt-1 ${!this.state.artist && `mb-2`}`}
-                >
-                  <Input
-                    type="text"
-                    name="artist"
-                    placeholder="Artist Name"
-                    className="rounded-0"
-                    value={this.state.artist}
-                    onChange={this.updateArtist}
-                    autoComplete="off"
-                  />
-                </Col>
-                <Col />
-              </Row>
-              {this.state.artist && (
-                <div className="text-center">
-                  <Link
-                    className="btn badge-pill btn-success btn-lg mt-4 pr-5 pl-5 mb-2"
-                    to={`/artists?search=${this.state.artist}${
-                      window.location.hash
-                    }`}
-                    onClick={() => this.searchArtist(this.state.artist)}
-                  >
-                    <span id="go" className="text-uppercase">
-                      Search Artist
-                    </span>
-                  </Link>
+            <div className="jumbotron jumbotron-fluid homeJumbotron">
+              <div className="container">
+                <h1 className="mt-3 text-center text-capitalize">
+                  Results for {this.state.searchedItem}
+                </h1>
+                <p className="lead text-center">
+                  Click on an artist to get related artists.
+                </p>
+                <div className="row mt-5 mb-5">
+                  <div className="col" />
+                  <div className="col-12 col-md-8 col-lg-6">
+                    <div className="card border-0 badge-pill search p-2">
+                      <div className="d-flex">
+                        <input
+                          type="text"
+                          name="artist"
+                          className="form-control form-control-lg border-0 "
+                          placeholder="Artist Name"
+                          value={this.state.artist}
+                          onChange={this.updateArtist}
+                          autoComplete="off"
+                        />
+                        <div className="align-self-center">
+                          <Link
+                            className={`btn btn-success searchBtn shadow ${this
+                              .state.query.length < 1 && `disabled`}`}
+                            to={`/artists?search=${this.state.query}${
+                              window.location.hash
+                            }`}
+                            onClick={() => this.searchArtist(this.state.query)}
+                          >
+                            <IoIosSearch size="25" className="mt-1" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col" />
                 </div>
-              )}
-              <Artists artists={this.state.artists} />
+              </div>
             </div>
-            <Footer />
+
+            <Container className="mb-5">
+              <div>
+                <Artists artists={this.state.artists} />
+              </div>
+              <Footer />
+            </Container>
           </div>
         )}
-      </Container>
+      </div>
     );
   }
 }

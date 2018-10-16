@@ -12,11 +12,7 @@ var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
 var redirect_uri = "http://localhost:8888/callback";
 var port = process.env.PORT || 8888;
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
+
 var generateRandomString = function(length) {
   var text = "";
   var possible =
@@ -39,7 +35,7 @@ var generateRandomString = function(length) {
 //       title: ".chart-number-one__title",
 //       artist: ".chart-number-one__artist a"
 //     }
-//   ]).write("./songs/billboard1.json");
+//   ]).write("./data/billboard1.json");
 
 //   x("https://www.billboard.com/charts/hot-100", ".chart-list-item", [
 //     {
@@ -47,7 +43,7 @@ var generateRandomString = function(length) {
 //       title: ".chart-list-item__title-text",
 //       artist: ".chart-list-item__artist"
 //     }
-//   ]).write("./songs/billboard99.json");
+//   ]).write("./data/billboard99.json");
 // }
 
 var stateKey = "spotify_auth_state";

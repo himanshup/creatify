@@ -1,0 +1,11 @@
+.customLinks {
+  color: #1db954;
+  text-decoration: none;
+  transition: 0.1s ease !important;
+}
+
+.customLinks:hover {
+  color: #1ed760;
+  text-decoration: none;
+  transition: 0.1s ease !important;
+}

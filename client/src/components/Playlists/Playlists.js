@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import SpotifyWebApi from "spotify-web-api-js";
+import querystring from "querystring";
 import Tracks from "../Tracks/Tracks";
 import Loading from "../Loading/Loading";
 import Footer from "../Footer/Footer";
@@ -14,7 +15,7 @@ class Playlists extends Component {
       loading: true,
       loggedIn: false,
       userId: "",
-      term: "kpop",
+      query: "",
       playlists: [],
       total: 0,
       tracks: [],
@@ -29,10 +30,45 @@ class Playlists extends Component {
     this.setAccessToken();
   }
 
-  getPlaylists = () => {
+  setAccessToken = () => {
+    const params = this.props.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+      this.setState({
+        loggedIn: token ? true : false
+      });
+      this.getUserInfo();
+      const query = querystring.parse(this.props.location.search);
+      this.setState({
+        query: query["?search"]
+      });
+      this.getPlaylists(query["?search"]);
+    }
+  };
+
+  getUserInfo = () => {
     spotifyApi
-      .searchPlaylists("kpop", { limit: 50 })
-      .then(async response => {
+      .getMe()
+      .then(response => {
+        this.setState({
+          userId: response.id
+        });
+      })
+      .catch(error => {
+        if (error) {
+          this.setState({
+            loggedIn: false,
+            loading: false
+          });
+        }
+      });
+  };
+
+  getPlaylists = term => {
+    spotifyApi
+      .searchPlaylists(term, { limit: 50 })
+      .then(response => {
         const playlists = response.playlists.items;
         for (const playlist of playlists) {
           this.setState(state => {
@@ -44,12 +80,14 @@ class Playlists extends Component {
             };
           });
         }
+      })
+      .then(response => {
         this.setState({
           loading: false
         });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   };
 
@@ -71,8 +109,7 @@ class Playlists extends Component {
       newPlaylists = [...newPlaylists, tracksArr];
     }
 
-    // get occurrences for each track
-
+    // get occurrences for each track and create new array
     let result = newPlaylists.reduce((res, arr, index) => {
       arr.forEach(({ id }) => {
         if (res[id] !== null) {
@@ -89,6 +126,7 @@ class Playlists extends Component {
 
     // loop through each playlist in playlists array
     // then create new array with tracks from each playlist
+    // track uris with local in them cannot be added to playlists so we exclude them
     let tracks = [];
     for (const playlist of newPlaylists) {
       for (const track of playlist) {
@@ -107,7 +145,8 @@ class Playlists extends Component {
 
     // only want the first 100 tracks
     const finalTracks = duplicatesRemoved.splice(0, 100);
-    console.log(finalTracks);
+
+    // create new array for uris, which are needed to add tracks to a playlist
     for (const track of finalTracks) {
       this.setState(state => {
         let uris = [...state.uris, track.uri];
@@ -141,12 +180,6 @@ class Playlists extends Component {
           this.state.uris
         );
       })
-      // .then(finalPlaylist => {
-      //   return spotifyApi.getPlaylist(
-      //     this.state.userId,
-      //     this.state.topTracksPlaylistId
-      //   );
-      // })
       .then(response => {
         this.setState({
           playlistCreated: true,
@@ -170,44 +203,15 @@ class Playlists extends Component {
       if (!obj[arr[i][value]]) obj[arr[i][value]] = arr[i];
     }
     var newArr = [];
-    for (var key in obj) newArr.push(obj[key]);
-    return newArr;
-  };
-
-  setAccessToken = () => {
-    const params = this.props.getHashParams();
-    const token = params.access_token;
-    if (token) {
-      spotifyApi.setAccessToken(token);
-      this.setState({
-        loggedIn: token ? true : false
-      });
-      this.getUserInfo();
-      this.getPlaylists();
+    for (var key in obj) {
+      newArr.push(obj[key]);
     }
-  };
-
-  getUserInfo = () => {
-    spotifyApi
-      .getMe()
-      .then(response => {
-        this.setState({
-          userId: response.id
-        });
-      })
-      .catch(error => {
-        if (error) {
-          this.setState({
-            loggedIn: false,
-            loading: false
-          });
-        }
-      });
+    return newArr;
   };
 
   render() {
     return (
-      <div className="container mt-3">
+      <div>
         {this.state.loading ? (
           <Loading />
         ) : (
@@ -217,23 +221,52 @@ class Playlists extends Component {
                 <div>
                   {!this.state.gotTopTracks ? (
                     <div>
-                      <div className="text-center">
-                        <h1>Matching Playlists For {this.state.term}</h1>
+                      <div className="jumbotron jumbotron-fluid header">
+                        <div className="container text-center">
+                          <h1 className="text-capitalize">
+                            Matching Playlists For {this.state.query}
+                          </h1>
+                          <p>
+                            Found 50 matching playlists with a total of{" "}
+                            {this.state.total} tracks. Click the button to find
+                            the top tracks across all of these playlists.
+                          </p>
+                          <Button
+                            className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                            onClick={() => this.getTopTracks()}
+                          >
+                            <span className="text-uppercase btns">
+                              Find Top Tracks
+                            </span>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="jumbotron jumbotron-fluid header">
+                      <div className="container text-center">
+                        <h1 className="text-capitalize">
+                          Top {this.state.term} Tracks
+                        </h1>
                         <p>
-                          Heres a list of 50 matching playlists with a total of{" "}
-                          {this.state.total} tracks. Click the button to find
-                          the top tracks across all of these playlists.
+                          These are the top 100 {this.state.term} tracks. Click
+                          the button to save this as a playlist on Spotify.
                         </p>
                         <Button
-                          className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                          onClick={() => this.getTopTracks()}
+                          className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2 shadow"
+                          onClick={() => this.createPlaylist()}
                         >
-                          <span id="go" className="text-uppercase">
-                            Find Top Tracks
+                          <span className="text-uppercase btns">
+                            Create Playlist
                           </span>
                         </Button>
                       </div>
-                      <ul className="list-unstyled shadow-lg mt-3">
+                    </div>
+                  )}
+
+                  {!this.state.gotTopTracks ? (
+                    <div className="container">
+                      <ul className="list-unstyled bg-white shadow-lg mt-3">
                         {this.state.playlists.map((playlist, index) => (
                           <li
                             key={index}
@@ -249,7 +282,7 @@ class Playlists extends Component {
                                   : "https://res.cloudinary.com/dmrien29n/image/upload/v1539506039/default-artist.png"
                               }
                               alt=""
-                              className={`mr-3 centered-and-cropped ${
+                              className={`mr-3 centered-and-cropped rounded shadow ${
                                 index === 99
                                   ? ``
                                   : `${index <= 8 ? `ml-3` : `ml-2`}`
@@ -259,9 +292,6 @@ class Playlists extends Component {
                             />
                             <div className="media-body mt-1 align-self-center">
                               <h6>{playlist.name}</h6>
-                              {/* <small className="text-muted">
-                              
-                            </small> */}
                             </div>
                             <small className="float-right align-self-center text-muted">
                               Tracks: {playlist.tracks.total}
@@ -271,22 +301,7 @@ class Playlists extends Component {
                       </ul>
                     </div>
                   ) : (
-                    <div>
-                      <div className="text-center">
-                        <h1>Top {this.state.term} tracks</h1>
-                        <p>
-                          These are the top 100 {this.state.term} tracks. Click
-                          the button to save this as a playlist on Spotify.
-                        </p>
-                        <Button
-                          className="btn badge-pill btn-success btn-lg pr-5 pl-5 mb-2"
-                          onClick={() => this.createPlaylist()}
-                        >
-                          <span id="go" className="text-uppercase">
-                            Create Playlist
-                          </span>
-                        </Button>
-                      </div>
+                    <div className="container">
                       <Tracks tracks={this.state.tracks} />
                     </div>
                   )}
@@ -296,12 +311,10 @@ class Playlists extends Component {
                   <h1 className="mt-3">Playlist Created</h1>
                   <p>Click the button to view it on Spotify.</p>
                   <Button
-                    className="btn badge-pill btn-success btn-lg pr-5 pl-5"
+                    className="btn badge-pill btn-success btn-lg pr-5 pl-5 shadow"
                     href={this.state.playlist.external_urls.spotify}
                   >
-                    <span id="go" className="text-uppercase">
-                      View Playlist
-                    </span>
+                    <span className="text-uppercase btns">View Playlist</span>
                   </Button>
                 </div>
               )}

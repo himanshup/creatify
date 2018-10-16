@@ -25,7 +25,7 @@ const Tracks = props => {
             className={`mr-3 rounded centered-and-cropped shadow ${
               index === 99 ? `` : `${index <= 8 ? `ml-3` : `ml-2`}`
             } `}
-            width="60px"
+            width="70px"
             height="70px"
           />
           <div className="media-body mt-1 align-self-center">
