@@ -168,7 +168,7 @@ class Playlists extends Component {
     });
     spotifyApi
       .createPlaylist(this.state.userId, {
-        name: `Top ${this.state.term} Tracks`
+        name: `Top ${this.state.query} Tracks`
       })
       .then(playlist => {
         this.setState({
