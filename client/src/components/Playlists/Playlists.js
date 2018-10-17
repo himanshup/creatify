@@ -198,12 +198,12 @@ class Playlists extends Component {
   };
 
   removeDuplicates = (arr, value) => {
-    var obj = {};
-    for (var i = 0, len = arr.length; i < len; i++) {
+    let obj = {};
+    for (let i = 0, len = arr.length; i < len; i++) {
       if (!obj[arr[i][value]]) obj[arr[i][value]] = arr[i];
     }
-    var newArr = [];
-    for (var key in obj) {
+    let newArr = [];
+    for (let key in obj) {
       newArr.push(obj[key]);
     }
     return newArr;
