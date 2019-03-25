@@ -20,8 +20,8 @@ If you don't have a Spotify account already, create one first and then go [here]
 Add `http://localhost:8888/callback` to Redirect URIs. If you add any authorization scopes, add them to the `var scope` variable in `app.js`.  
 
 ```
-git clone https://github.com/himanshup/spotify-playlist-creator.git
-cd spotify-playlist-creator
+git clone https://github.com/himanshup/creatify.git
+cd creatify
 npm install
 cd client
 npm install
