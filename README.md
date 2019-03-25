@@ -2,7 +2,7 @@
 
 ![Image 1](https://raw.githubusercontent.com/himanshup/spotify-playlist-creator/master/screenshots/home.png)
 
-Creatify is a web app for creating Spotify playlists. Created using [Spotify Web API](https://developer.spotify.com/documentation/web-api/), React, Node.js, and Express.
+Creatify is a web app for creating Spotify playlists. Built with React, Node.js, and Express.
 
 A spotify account is required to use the app. If you don't want to sign in, checkout the screenshots at the bottom.
 
