@@ -8,10 +8,8 @@ A spotify account is required to use the app. If you don't want to sign in, chec
 
 ## Features
 
-- Create playlist based on an artist (gets related artists + top tracks for each artist)
-- Create playlist based on search criteria (returns 50 playlists matching search criteria and finds the top tracks across all playlists)
-- Create playlist with songs from Billboard's Top 100
-- Create playlist with your top 50 tracks
+- Create a playlist based on an artist (gets related artists + top tracks for each artist)
+- Create a playlist based on search criteria (returns 50 playlists matching search criteria and finds the top tracks across all playlists)
 - View your top tracks and create a playlist with them
 - View your top artists and create a playlist based on them
 
