@@ -2,19 +2,22 @@
 
 Playlist Creator is a web app for creating Spotify playlists. Created using [Spotify Web API](https://developer.spotify.com/documentation/web-api/), React, and Node.js.
 
-View it [here](https://playlistcreator.herokuapp.com/). You must be signed in to search for artists and create playlists. If you don't want to sign in, checkout the screenshots at the bottom.
+You must be signed in to search for artists and create playlists. If you don't want to sign in, checkout the screenshots at the bottom.
 
 ## Features
 
-- Create playlist based on an artist (search for an artist and it will show related artists + option to get top tracks for each artist).
-- Create playlist based on search criteria (enter some keywords and you will be shown 50 matching playlists, along with the top tracks across all 50 of them.)
-- Create playlist with songs from Billboard's Top 100.
-- Create playlist with your top 50 tracks.
-- Create playlist based on your top 10 artists.
+- Create playlist based on an artist (gets related artists + top tracks for each artist)
+- Create playlist based on search criteria (returns 50 playlists matching search criteria and finds the top tracks across all playlists)
+- Create playlist with songs from Billboard's Top 100
+- Create playlist with your top 50 tracks
+- View your top tracks and create a playlist with them
+- View your top artists and create a playlist based on them
 
-## Development
+## Running Locally
 
-**Note**: You need a Client ID and Client Secret ID to run this. To get them, go [here](https://developer.spotify.com/dashboard/login) and create an app. You will also need to add `http://localhost:8888/callback` as a Redirect URI. Replace the CLIENT_ID and CLIENT_SECRET values in `app.js` with your own. To run with `yarn` instead, you will have to edit the `dev` script in `package.json` (in the root of the folder, not client).
+If you don't have a Spotify account already, create one first and then go [here](https://developer.spotify.com/dashboard/login) to create a Spotify app.  
+
+Add `http://localhost:8888/callback` to Redirect URIs. If you add any authorization scopes, add them to the `var scope` variable in `app.js`.  
 
 ```
 git clone https://github.com/himanshup/spotify-playlist-creator.git
@@ -23,6 +26,18 @@ npm install
 cd client
 npm install
 cd ..
+```
+
+Create a .env file in the root of the project and add your Client ID and Client Secret from the app you just created  
+
+```
+CLIENT_ID='<id>'
+CLIENT_SECRET='<secret>'
+```
+
+Run the server and react app  
+
+```
 npm run dev
 ```
 
