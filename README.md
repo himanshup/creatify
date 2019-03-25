@@ -4,7 +4,7 @@
 
 Creatify is a web app for creating Spotify playlists. Built with React, Node.js, and Express.
 
-A spotify account is required to use the app. If you don't want to sign in, checkout the screenshots at the bottom.
+A Spotify account is required to use the app but If you don't want to sign in, there are screenshots at the bottom.
 
 ## Features
 
