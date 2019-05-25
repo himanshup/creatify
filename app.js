@@ -24,27 +24,6 @@ var generateRandomString = function(length) {
   return text;
 };
 
-// var j = schedule.scheduleJob("* */6 * * *", function() {
-//   getSongs();
-// });
-
-// function getSongs() {
-//   x("https://www.billboard.com/charts/hot-100", ".chart-number-one", [
-//     {
-//       rank: "[data-rank]@data-rank",
-//       title: ".chart-number-one__title",
-//       artist: ".chart-number-one__artist a"
-//     }
-//   ]).write("./data/billboard1.json");
-
-//   x("https://www.billboard.com/charts/hot-100", ".chart-list-item", [
-//     {
-//       rank: ".chart-list-item__rank ",
-//       title: ".chart-list-item__title-text",
-//       artist: ".chart-list-item__artist"
-//     }
-//   ]).write("./data/billboard99.json");
-// }
 
 var stateKey = "spotify_auth_state";
 
@@ -161,42 +140,6 @@ if (process.env.NODE_ENV !== "production") {
     });
   });
 }
-
-// get the rank 1 song on billboard
-app.get("/api/billboard/top/1", function(req, res) {
-  var stream = x(
-    "https://www.billboard.com/charts/hot-100",
-    ".chart-number-one",
-    [
-      {
-        rank: "[data-rank]@data-rank",
-        title: ".chart-number-one__title",
-        artist: ".chart-number-one__artist a"
-      }
-    ]
-  ).stream();
-  stream.pipe(res);
-
-  // res.sendFile(path.join(__dirname, "/songs", "billboard1.json"));
-});
-
-// get the rest of the songs
-app.get("/api/billboard/top/99", function(req, res) {
-  var stream = x(
-    "https://www.billboard.com/charts/hot-100",
-    ".chart-list-item",
-    [
-      {
-        rank: ".chart-list-item__rank ",
-        title: ".chart-list-item__title-text",
-        artist: ".chart-list-item__artist"
-      }
-    ]
-  ).stream();
-  stream.pipe(res);
-
-  // res.sendFile(path.join(__dirname, "/songs", "billboard99.json"));
-});
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
