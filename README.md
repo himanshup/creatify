@@ -25,14 +25,13 @@ cd creatify
 npm install
 cd client
 npm install
-cd ..
 ```
 
 Create a .env file in the root of the project and add your Client ID and Client Secret from the app you just created  
 
 ```
-CLIENT_ID='<id>'
-CLIENT_SECRET='<secret>'
+CLIENT_ID=<id>
+CLIENT_SECRET=<secret>
 ```
 
 Run the server and react app  
