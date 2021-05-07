@@ -19,7 +19,7 @@
     "spotify-web-api-js": "^0.24.0"
   },
   "devDependencies": {
-    "lodash": ">=4.17.11",
+    "lodash": ">=4.17.21",
     "merge": ">=1.2.1",
     "webpack-dev-server": ">=3.1.11"
   },
