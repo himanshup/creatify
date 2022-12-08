@@ -12,7 +12,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
-    "express": "~4.16.0",
+    "express": "~4.17.3",
     "path": "^0.12.7",
     "querystring": "~0.2.0",
     "request": "^2.88.0"
